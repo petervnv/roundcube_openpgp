@@ -1,25 +1,28 @@
 <?php
-/*
-+-------------------------------------------------------------------------+
-| OpenPGP.js implemented in Roundcube                                     |
-|                                                                         |
-| Copyright (C) 2013 Niklas Femerstrand <nik@qnrq.se>                     |
-|                                                                         |
-| This program is free software; you can redistribute it and/or modify    |
-| it under the terms of the GNU General Public License version 2          |
-| as published by the Free Software Foundation.                           |
-|                                                                         |
-| This program is distributed in the hope that it will be useful,         |
-| but WITHOUT ANY WARRANTY; without even the implied warranty of          |
-| MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
-| GNU General Public License for more details.                            |
-|                                                                         |
-| You should have received a copy of the GNU General Public License along |
-| with this program; if not, write to the Free Software Foundation, Inc., |
-| 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.             |
-|                                                                         |
-+-------------------------------------------------------------------------+
-*/
+
+/**
+ * Roundcube plugin adding OpenPGP support using OpenPGPOpenPGP.js         
+ * 
+ * @version @package_version@
+ * @author Lazlo Westerhof <hello@lazlo.me>
+ * @author Niklas Femerstrand <nik@qnrq.se>
+ *                                                        
+ * Copyright (C) 2013 Niklas Femerstrand <nik@qnrq.se>                     
+ * Copyright (C) 2013-2014, Lazlo Westerhof <hello@lazlo.me>
+ *                                                                         
+ * This program is free software; you can redistribute it and/or modify    
+ * it under the terms of the GNU General Public License version 2          
+ * as published by the Free Software Foundation.                           
+ *                                                                         
+ * This program is distributed in the hope that it will be useful,         
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of          
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           
+ * GNU General Public License for more details.                            
+ *                                                                         
+ * You should have received a copy of the GNU General Public License along 
+ * with this program; if not, write to the Free Software Foundation, Inc., 
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.                                                                                  
+ */
 
 class rc_openpgpjs extends rcube_plugin {
   public $task = 'mail|settings';
@@ -45,8 +48,7 @@ class rc_openpgpjs extends rcube_plugin {
 
       // load js
       $this->include_script('js/openpgp.min.js');
-      $this->include_script('js/rc_openpgpjs.crypto.js');
-      $this->include_script('js/rc_openpgpjs.js');
+      $this->include_script('js/roundcube_openpgp.js');
 
       // load css
       $this->include_stylesheet($this->local_skin_path() . '/rc_openpgpjs.css');
@@ -178,9 +180,9 @@ class rc_openpgpjs extends rcube_plugin {
 
       if($status == 200) {
         // TODO Fix search regex to match 32/64-bit str
-        preg_match_all("/\/pks\/lookup\?op=vindex&search=(.*)\">(.*)<\/a>/", $result, $m);
+        preg_match_all("/\/pks\/lookup\?op=vindex&amp;search=(.*)\">(.*)<\/a>/", $result, $m);
 
-        if(count($m) > 0) {
+        if(count($m[0]) > 0) {
           $found = array();
           for($i = 0; $i < count($m[0]); $i++)
             $found[] = array($m[1][$i], $m[2][$i]);

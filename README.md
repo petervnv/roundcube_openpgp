@@ -1,9 +1,9 @@
-rc_openpgpjs
-================
+Roundcube OpenPGP
+=================
 [![Flattr this git repo](http://api.flattr.com/button/flattr-badge-large.png)](https://flattr.com/submit/auto?user_id=qnrq&url=https://github.com/qnrq/rc_openpgpjs/&title=rc_openpgpjs&language=&tags=github&category=software)
 
-rc_openpgpjs is an open source (GPLv2) extension adding OpenPGPs functionality
-to the Roundcube webmail project. rc_openpgpjs is written with the intention to
+Roundcube OpenPGP is an open source (GPLv2) extension adding OpenPGP support
+to the Roundcube webmail project. Roundcube OpenPGP is written with the intention to
 be as user friendly as possible for everyday PGP use. See
 [Why do you need PGP?][why], [OpenPGP.js][openpgpjs] and [Roundcube][roundcube]
 for more info.
@@ -32,7 +32,7 @@ any other Public Key Server which follows the [OpenPGP HTTP Keyserver Protocol
 Installation
 ------------
 1. Copy plugin to 'plugins' folder
-2. Add 'rc_openpgpjs' to plugins array in your Roundcube config (config/main.inc.php)
+2. Add 'roundcube_openpgp' to plugins array in your Roundcube config (config/main.inc.php)
 
 Contact
 -------
