@@ -1,7 +1,5 @@
 Roundcube OpenPGP
 =================
-[![Flattr this git repo](http://api.flattr.com/button/flattr-badge-large.png)](https://flattr.com/submit/auto?user_id=qnrq&url=https://github.com/qnrq/rc_openpgpjs/&title=rc_openpgpjs&language=&tags=github&category=software)
-
 Roundcube OpenPGP is an open source (GPLv2) extension adding OpenPGP support
 to the Roundcube webmail project. Roundcube OpenPGP is written with the intention to
 be as user friendly as possible for everyday PGP use. See
@@ -10,17 +8,17 @@ for more info.
 
 Features
 --------
-- E-mail PGP signing
-- E-mail PGP encryption and decryption
-- Secure key storage (HTML5 local storage)
-- Key generation
-- Key lookups against PGP Secure Key Servers
+- e-mail OpenPGP signing and verification
+- e-mail OpenPGP encryption and decryption
+- key storage (HTML5 local storage)
+- key pair generation
+- key lookups against PGP Secure Key Servers
 
 Key storage
 -----------
-The keys are stored client side using HTML5 web storage. Private keys are never
-transferred from the user's local storage. Private and public keys can be
-exported from the web storage and be used outside of Roundcube and equally
+The keys are stored client side using HTML5 local storage.
+Private keys are never transferred from the user's local storage.
+Private and public keys can be exported from the web storage and be used outside of Roundcube and equally
 externally generated keys can be imported and used inside Roundcube.
 
 Key lookups
@@ -32,7 +30,7 @@ any other Public Key Server which follows the [OpenPGP HTTP Keyserver Protocol
 Installation
 ------------
 1. Copy plugin to 'plugins' folder
-2. Add 'roundcube_openpgp' to plugins array in your Roundcube config (config/main.inc.php)
+2. Add 'rc_openpgpjs' to plugins array in your Roundcube config (config/main.inc.php)
 
 Contact
 -------
@@ -42,7 +40,7 @@ Questions? Please see the [FAQ][faq].
 
 [roundcube]: http://www.roundcube.net/
 [openpgpjs]: https://openpgpjs.org/
-[issues]: https://github.com/qnrq/rc_openpgpjs/issues
+[issues]: https://github.com/lazlolazlolazlo/rc_openpgpjs/issues
 [why]: http://www.pgpi.org/doc/whypgp/en/
 [draft]: https://tools.ietf.org/html/draft-shaw-openpgp-hkp-00
 [faq]: https://github.com/qnrq/rc_openpgpjs/wiki/FAQ
