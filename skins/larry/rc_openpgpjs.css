@@ -1,12 +1,12 @@
 .hidden {
-  display: none; 
+  display: none;
   visibility: hidden;
 }
 ul.toolbarmenu li span.icon.key_manager {
   background: url(images/key_manager.png) -2px -1px no-repeat;
 }
 .toolbar a.button.key_manager {
-  background: url("images/lock.png") center -2px no-repeat; 
+  background: url("images/lock.png") center -2px no-repeat;
 }
 #openpgpjs_key_manager.popupdialog,
 #openpgpjs_key_manager.ui-dialog-content {
@@ -15,7 +15,7 @@ ul.toolbarmenu li span.icon.key_manager {
 #openpgpjs_tabs {
   min-height: 400px;
 }
-#openpgpjs_tabs .ui-tabs { 
+#openpgpjs_tabs .ui-tabs {
   padding: 0;
 }
 #openpgpjs_tabs .ui-tabs-panel {
