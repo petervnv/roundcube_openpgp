@@ -35,7 +35,7 @@ if (window.rcmail) {
       rcmail.display_message(rcmail.gettext("no_window_crypto", "rc_openpgpjs"), "error");
     }
 
-    this.passphrase = "";
+    rcmail.passphrase = "";
     rcmail.addEventListener("plugin.pks_search", rcmail.openpgp_pks_search_callback);
 
     if (sessionStorage.length > 0) {
@@ -48,7 +48,7 @@ if (window.rcmail) {
       title: rcmail.gettext("select_key", "rc_openpgpjs"),
       width: "30%",
       open: function () {
-        this.openpgp_update_key_selector();
+        rcmail.openpgp_update_key_selector();
       },
       close: function () {
         $("#selected_key_passphrase").val("");
@@ -78,7 +78,7 @@ if (window.rcmail) {
     if (rcmail.env.action === "compose") {
       rcmail.addEventListener("change_identity", function () {
         sessionStorage.clear();
-        this.passphrase = "";
+        rcmail.passphrase = "";
       });
       // Disable draft autosave and prompt user when saving plaintext message as draft
       rcmail.env.draft_autosave = 0;
@@ -151,7 +151,7 @@ rcube_webmail.prototype.openpgp_message_received = function()
   if (cleartext) {
     // verify signature of cleartext messagess
     if (message.verify(publicKeys)) {
-      this.openpgp_display_message(rcmail.gettext('signature_valid', 'rc_openpgpjs') + ' (' + sender + ')', 'confirmation');
+      this.openpgp_display_message(this.gettext('signature_valid', 'rc_openpgpjs') + ' (' + sender + ')', 'confirmation');
       $("#messagebody div.message-part pre").html(this.openpgp_escape_html(message.text));
       return true;
     }
@@ -328,19 +328,16 @@ rcube_webmail.prototype.openpgp_set_passphrase = function(id, passphrase)
 rcube_webmail.prototype.openpgp_recipient_public_keys = function()
 {
   var publicKeys = [],
-    c = 0,
     recipients = [],
-    matches = "",
+    matches = [],
     fields = ["_to", "_cc", "_bcc"],
     re = /[a-zA-Z0-9\._%+-]+@[a-zA-Z0-9\._%+-]+\.[a-zA-Z]{2,4}/g;
 
   // retrieve all recipients
   for (var field in fields) {
     matches = $("#" + fields[field]).val().match(re);
-
-    for (var key in matches) {
-      recipients[c] = matches[key];
-      c++;
+    if (matches) {
+      recipients = recipients.concat(matches);
     }
   }
 
@@ -350,7 +347,7 @@ rcube_webmail.prototype.openpgp_recipient_public_keys = function()
     if (typeof(publicKey[0]) !== "undefined") {
       publicKeys.push(publicKey[0]);
     } else {
-      // Querying PKS for recipient pubkey
+      // query PKS for recipient public key
       if (confirm("Couldn't find a public key for " + recipient + ". If you already have it you can import it into the key manager. Would you like to query the key server for the missing key?")) {
         this.http_post("plugin.pks_search", "search=" + recipient + "&op=index");
         $("#openpgpjs_search_input").attr("disabled", "disabled");
@@ -481,13 +478,13 @@ rcube_webmail.prototype.openpgp_before_send = function()
     if ($("#openpgpjs_sign").is(":checked")) {
       var encryptingAndSigning = this.display_message('Signing and encrypting message', 'loading');
       openpgp.signAndEncryptMessage(publicKeys, privateKey.keys[0], plaintext, function(err, data) {
-        this.hide_message(encryptingAndSigning);
+        rcmail.hide_message(encryptingAndSigning);
         if (data) {
-          this.openpgp_replace_plaintext(data);
-          this.display_message('Message signed and encrypted', 'confirmation', this.message_time);
+          rcmail.openpgp_replace_plaintext(data);
+          rcmail.display_message('Message signed and encrypted', 'confirmation', rcmail.message_time);
           return true;
         }
-        this.display_message('Signing and encrypting message failed', 'error');
+        rcmail.display_message('Signing and encrypting message failed', 'error');
         return false;            
       });
     }
@@ -495,13 +492,13 @@ rcube_webmail.prototype.openpgp_before_send = function()
     else {
       var encrypting = this.display_message('Encrypting message', 'loading');
       openpgp.encryptMessage(publicKeys, plaintext, function(err, data) {
-        this.hide_message(encrypting);
+        rcmail.hide_message(encrypting);
         if (data) {
-          this.openpgp_replace_plaintext(data);
-          this.display_message('Message encrypted', 'confirmation', this.message_time);
+          rcmail.openpgp_replace_plaintext(data);
+          rcmail.display_message('Message encrypted', 'confirmation', rcmail.message_time);
           return true;
         }
-        this.display_message('Encrypting message failed', 'error');
+        rcmail.display_message('Encrypting message failed', 'error');
         return false;            
       });
     }
@@ -510,13 +507,13 @@ rcube_webmail.prototype.openpgp_before_send = function()
   else if ($("#openpgpjs_sign").is(":checked")) {
     var signing = this.display_message('Signing message', 'loading');
     openpgp.signClearMessage(privateKey.keys, plaintext, function(err, data) {
-      this.hide_message(signing);
+      rcmail.hide_message(signing);
       if (data) {
-        this.openpgp_replace_plaintext(data);
-        this.display_message('Message signed', 'confirmation', this.message_time);
+        rcmail.openpgp_replace_plaintext(data);
+        rcmail.display_message('Message signed', 'confirmation', rcmail.message_time);
         return true;
       }
-      this.display_message('Signing message failed', 'error');
+      rcmail.display_message('Signing message failed', 'error');
       return false;
     });
   }
