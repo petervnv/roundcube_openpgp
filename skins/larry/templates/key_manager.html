@@ -4,6 +4,7 @@
       <li><a href='#openpgpjs-tab1'><roundcube:label name="rc_openpgpjs.public_keys" /></a></li>
       <li><a href='#openpgpjs-tab2'><roundcube:label name="rc_openpgpjs.private_keys" /></a></li> 
       <li><a href='#openpgpjs-tab3'><roundcube:label name="rc_openpgpjs.generate_keys" /></a></li>
+      <li><a href='#openpgpjs-tab4'><roundcube:label name="rc_openpgpjs.key_search" /></a></li>
     </ul> 
     <div id='openpgpjs-tab1'>
       <table id='openpgpjs_pubkeys' class="records-table">
@@ -40,7 +41,6 @@
             <td><roundcube:label name="rc_openpgpjs.fingerprint" /></td>
             <td><roundcube:label name="rc_openpgpjs.person" /></td>
             <td><roundcube:label name="rc_openpgpjs.length_alg" /></td>
-            <!--<td><roundcube:label name="rc_openpgpjs.status" /></td>-->
             <td><roundcube:label name="rc_openpgpjs.action" /></td>
           </tr>
         </thead>
@@ -83,6 +83,20 @@
           <input type='button' class='button mainaction hidden' id='import_button' value='<roundcube:label name="rc_openpgpjs.import" />' onclick='rcmail.openpgp_import_generated_key_pair();' />
         </div>
         <div id='generated_keys'></div>
+    </div>
+    <div id='openpgpjs-tab4'>
+      <div><roundcube:label name="rc_openpgpjs.search_description" /></div><br />
+      <div><roundcube:label name="email" />: <input type="text" id="openpgpjs_search_input" /> <input type="submit" value='<roundcube:label name="search" />' id="openpgpjs_search_submit" onclick='rcmail.http_post("plugin.pks_search", "search=" + $("#openpgpjs_search_input").val() + "&op=index"); $("#openpgpjs_search_input").attr("disabled", "disabled"); $(this).attr("disabled", "disabled");' /><textarea id='importPubkeyField' style='visibility:hidden;'></textarea></div> <br />
+      <table id='openpgpjs_search_results' class="records-table">
+        <thead>
+          <tr class='boxtitle'>
+            <td><roundcube:label name="rc_openpgpjs.key_id" /></td>
+            <td><roundcube:label name="rc_openpgpjs.person" /></td>
+            <td><roundcube:label name="rc_openpgpjs.action" /></td>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
     </div>
   </div>
 </div>

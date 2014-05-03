@@ -56,17 +56,6 @@ if (window.rcmail) {
       }
     });
 
-    $("#openpgpjs_key_search").dialog({
-      modal: true,
-      autoOpen: false,
-      title: rcmail.gettext("key_search", "rc_openpgpjs"),
-      width: "60%",
-      open: function () {
-        $("#openpgpjs_search_results").html("");
-        $("#openpgpjs_search_input").val("");
-      }
-    });
-
     $("#openpgpjs_key_manager").dialog({
       modal: true,
       autoOpen: false,
@@ -345,6 +334,7 @@ rcube_webmail.prototype.openpgp_recipient_public_keys = function()
     fields = ["_to", "_cc", "_bcc"],
     re = /[a-zA-Z0-9\._%+-]+@[a-zA-Z0-9\._%+-]+\.[a-zA-Z]{2,4}/g;
 
+  // retrieve all recipients
   for (var field in fields) {
     matches = $("#" + fields[field]).val().match(re);
 
@@ -365,7 +355,9 @@ rcube_webmail.prototype.openpgp_recipient_public_keys = function()
         this.http_post("plugin.pks_search", "search=" + recipient + "&op=index");
         $("#openpgpjs_search_input").attr("disabled", "disabled");
         $("#openpgpjs_search_submit").attr("disabled", "disabled");
-        $("#openpgpjs_key_search").dialog("open");
+        $("#openpgpjs_key_manager").dialog("open");
+        // open key search tab
+        $("#openpgpjs_tabs").tabs({ active: 3 });
       }
       return false;
     }
@@ -681,7 +673,7 @@ rcube_webmail.prototype.openpgp_pks_search_callback = function(response)
   }
 
   if (response.message === "ERR: No keys found") {
-      alert(this.gettext("search_no_keys", "rc_openpgpjs"));
+      alert(rcmail.gettext("search_no_keys", "rc_openpgpjs"));
       return false;
   }
 
@@ -690,20 +682,20 @@ rcube_webmail.prototype.openpgp_pks_search_callback = function(response)
     try {
       result = JSON.parse(response.message);
     } catch (e) {
-      alert(this.gettext("search_no_keys", "rc_openpgpjs"));
+      alert(rcmail.gettext("search_no_keys", "rc_openpgpjs"));
       return false;
     }
 
     $("#openpgpjs_search_results tbody").html("");
     for (var i = 0; i < result.length; i++) {
-      $("#openpgpjs_search_results tbody").append("<tr><td><a href='#' onclick='rcmail.openpgp_import_from_sks(\"" + result[i][0] + "\");'>Import</a></td><td>" + result[i][0] + "</td>" + "<td>" + result[i][1] + "</td></tr>");
+      $("#openpgpjs_search_results tbody").append("<tr><td>" + result[i][0] + "</td>" + "<td>" + result[i][1] + "</td><td><a href='#' onclick='rcmail.openpgp_import_from_sks(\"" + result[i][0] + "\");'>Import</a></td></tr>");
     }
   } else if (response.op === "get") {
     var k = JSON.parse(response.message);
     $("#importPubkeyField").val(k[0]);
 
-    if (this.openpgp_import_public_key($("#importPubkeyField").val())) {
-      alert(this.gettext("pubkey_import_success", "rc_openpgpjs"));
+    if (rcmail.openpgp_import_public_key($("#importPubkeyField").val())) {
+      alert(rcmail.gettext("pubkey_import_success", "rc_openpgpjs"));
     }
   }
 };
@@ -892,7 +884,7 @@ rcube_webmail.prototype.openpgp_update_key_manager = function()
     person = this.openpgp_escape_html(keyring.publicKeys.keys[i].getUserIds()[0]);
     length_alg = this.openpgp_get_algorithm(i);
     status = (keyring.publicKeys.keys[i].verifyPrimaryKey() ? this.gettext("valid", "rc_openpgpjs") : this.gettext("invalid", "rc_openpgpjs"));
-    del = "<a href='#' onclick='if (confirm(\"" + this.gettext('delete_pub', 'rc_openpgpjs') + "\")) { this.openpgp_remove_key(\"" + keyId + "\", false); this.openpgp_update_key_manager(); }'>" + this.gettext('delete', 'rc_openpgpjs') + "</a>";
+    del = "<a href='#' onclick='if (confirm(\"" + this.gettext('delete_pub', 'rc_openpgpjs') + "\")) { rcmail.openpgp_remove_key(\"" + keyId + "\", false); rcmail.openpgp_update_key_manager(); }'>" + this.gettext('delete', 'rc_openpgpjs') + "</a>";
     exp = "<a href=\"data:asc," + encodeURIComponent(keyring.publicKeys.keys[i].armor()) + "\" download=\"pubkey_" + "0x" + keyId.toUpperCase().substring(8) + ".asc\">Export</a> ";
     result = "<tr>" +
       "<td>" + keyId      + "</td>" +
@@ -917,7 +909,7 @@ rcube_webmail.prototype.openpgp_update_key_manager = function()
       fingerprint = this.openpgp_get_fingerprint(i, true);
       person = this.openpgp_escape_html(keyring.privateKeys.keys[i].getUserIds()[j]);
       length_alg = this.openpgp_get_algorithm(i, true);
-      del = "<a href='#' onclick='if (confirm(\"" + this.gettext('delete_priv', 'rc_openpgpjs') + "\")) { this.openpgp_remove_key(\"" + keyId + "\", true); this.openpgp_update_key_manager(); }'>" + this.gettext('delete', 'rc_openpgpjs') + "</a>";
+      del = "<a href='#' onclick='if (confirm(\"" + this.gettext('delete_priv', 'rc_openpgpjs') + "\")) { rcmail.openpgp_remove_key(\"" + keyId + "\", true); rcmail.openpgp_update_key_manager(); }'>" + this.gettext('delete', 'rc_openpgpjs') + "</a>";
       exp = "<a href=\"data:asc," + encodeURIComponent(keyring.privateKeys.keys[i].armor()) + "\" download=\"privkey_" + "0x" + keyId.toUpperCase().substring(8) + ".asc\">Export</a> ";
       result = "<tr>" +
         "<td>" + keyId      + "</td>" +

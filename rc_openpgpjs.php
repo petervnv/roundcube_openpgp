@@ -47,8 +47,8 @@ class rc_openpgpjs extends rcube_plugin {
       $this->add_texts('localization/', true);
 
       // load js
-      $this->include_script('js/openpgp.min.js');
-      $this->include_script('js/roundcube_openpgp.js');
+      $this->include_script('lib/openpgp.min.js');
+      $this->include_script('roundcube_openpgp.js');
 
       // load css
       $this->include_stylesheet($this->local_skin_path() . '/rc_openpgpjs.css');

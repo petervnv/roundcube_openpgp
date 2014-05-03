@@ -44,7 +44,6 @@ ul.toolbarmenu li span.icon.key_manager {
 .clickme { cursor: pointer !important; }
 .clickme:hover { background-color: #fff; }
 #generated_private, #generated_public { width: 45%; float: left; text-align: left; font-size: 7pt; }
-.odd { background-color: #ccc; }
 #openpgpjs_search_results { width: 99%; overflow: scroll; }
 #openpgpjs_search_results tr:hover { background-color: #fff; }
 
