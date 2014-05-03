@@ -45,7 +45,7 @@ if (window.rcmail) {
     $("#openpgpjs_key_select").dialog({
       modal: true,
       autoOpen: false,
-      title: rcmail.gettext("select_key", "rc_openpgpjs"),
+      title: rcmail.gettext("key_select", "rc_openpgpjs"),
       width: "30%",
       open: function () {
         rcmail.openpgp_update_key_selector();
@@ -194,7 +194,7 @@ rcube_webmail.prototype.openpgp_message_received = function()
         this.display_message('Message decrypted', 'confirmation', this.message_time);
         return true;
       }
-      this.openpgp_display_message("This message was not meant for the private key that you are using.", 'error');
+      this.openpgp_display_message(this.gettext('key_mismatch', 'rc_openpgpjs'), 'error');
       return false;            
     });
   }
