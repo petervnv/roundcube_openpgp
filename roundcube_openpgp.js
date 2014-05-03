@@ -716,7 +716,7 @@ rcube_webmail.prototype.openpgp_select_key = function(id)
 {
   var fingerprint = this.openpgp_get_fingerprint(id, true, false);
   $("#openpgpjs_selected").html("<strong>" + this.gettext("selected", "rc_openpgpjs") + ":</strong> " + $(".clickme#" + fingerprint).html());
-  $("#openpgpjs_selected_id").val(i);
+  $("#openpgpjs_selected_id").val(id);
   $("#passphrase").val("");
 };
 
