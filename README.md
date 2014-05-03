@@ -1,5 +1,14 @@
 Roundcube OpenPGP
 =================
+
+Attention
+---------
+Please don't use this plugin for anything real yet, it has never been reviewed. 
+Unless you're experimenting you should use something that works and has been reviewed.
+Also read [What’s wrong with in-browser cryptography?][wrong]
+
+Introduction
+------------
 Roundcube OpenPGP is an open source (GPLv2) extension adding OpenPGP support
 to the Roundcube webmail project. Roundcube OpenPGP is written with the intention to
 be as user friendly as possible for everyday PGP use. See
@@ -14,6 +23,11 @@ Features
 - key pair generation
 - key lookups against PGP Secure Key Servers
 
+Installation
+------------
+1. Copy plugin to 'plugins' folder
+2. Add 'rc_openpgpjs' to the $config['plugins'] array in your Roundcube config (config/config.inc.php)
+
 Key storage
 -----------
 The keys are stored client side using HTML5 local storage.
@@ -27,20 +41,13 @@ Public keys can be imported from PGP Secure Key Servers, i.e. pool.sks-keyserver
 any other Public Key Server which follows the [OpenPGP HTTP Keyserver Protocol 
 (HKP)][draft], i.e pgp.mit.edu.
 
-Installation
-------------
-1. Copy plugin to 'plugins' folder
-2. Add 'rc_openpgpjs' to plugins array in your Roundcube config (config/main.inc.php)
-
 Contact
 -------
 For any bug reports or feature requests please refer to the [tracking system][issues].
 
-Questions? Please see the [FAQ][faq].
-
 [roundcube]: http://www.roundcube.net/
 [openpgpjs]: https://openpgpjs.org/
 [issues]: https://github.com/lazlolazlolazlo/rc_openpgpjs/issues
+[wrong]: http://tonyarcieri.com/whats-wrong-with-webcrypto
 [why]: http://www.pgpi.org/doc/whypgp/en/
 [draft]: https://tools.ietf.org/html/draft-shaw-openpgp-hkp-00
-[faq]: https://github.com/qnrq/rc_openpgpjs/wiki/FAQ
