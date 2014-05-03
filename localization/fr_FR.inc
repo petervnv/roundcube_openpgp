@@ -5,6 +5,7 @@ $labels['no_window_crypto'] = 'WARNING! Your web browser does not support window
 
 // key manager
 $labels['action'] = 'Action';
+$labels['algorithm'] = 'Algorithm';
 $labels['bits'] = 'Taille en Bits';
 $labels['delete'] = 'Supprimer';
 $labels['delete_priv'] = 'Supprimer cette clef privée?';
@@ -13,6 +14,7 @@ $labels['fingerprint'] = 'Empreinte';
 $labels['generate'] = 'Générer';
 $labels['generate_keys'] = 'Générateur de Clef';
 $labels['ident'] = 'Identité';
+$labels['import_completed'] = 'Import completed';
 $labels['import_failed'] = 'Impossible d\'importer la clef, éventuellement à cause d\'un mauvais format';
 $labels['import_fail'] = 'Import échoué';
 $labels['import_gen'] = 'Succès! S\'il vous plaît enregistrer votre clef privée dans un endroit sûr, de préférence dans un conteneur chiffré. Votre clef privée n\'est pas transférée vers le serveur.';
@@ -20,6 +22,8 @@ $labels['import'] = 'Importer';
 $labels['import_private'] = 'Importer une clef privée';
 $labels['import_public'] = 'Importer une clef publique';
 $labels['invalid'] = 'Invalide';
+$labels['key_generation_failed'] = 'Key generation failed';
+$labels['key_generation_completed'] = 'Key generation completed';
 $labels['key_id'] = 'ID de la clef';
 $labels['key_manager'] = 'Gestionnaire de clef';
 $labels['key_search'] = 'Recherche de clef';
@@ -34,6 +38,8 @@ $labels['search_no_keys'] = 'No keys matched your search, try another query.';
 $labels['status'] = 'Statut';
 $labels['valid'] = 'Valide';
 $labels['verify'] = 'Vérification';
+
+// key select
 $labels['incorrect_pass'] = 'Phrase de chiffrement incorrecte';
 $labels['none'] = 'aucun';
 $labels['selected'] = 'Sélectionner';

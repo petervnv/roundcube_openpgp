@@ -5,6 +5,7 @@ $labels['no_window_crypto'] = 'WARNING! Your web browser does not support window
 
 // key manager
 $labels['action'] = 'Aktion';
+$labels['algorithm'] = 'Algorithm';
 $labels['bits'] = 'Bit';
 $labels['delete'] = 'löschen';
 $labels['delete_priv'] = 'Diesen privaten Schlüssel wirklich entfernen?';
@@ -13,6 +14,7 @@ $labels['fingerprint'] = 'Fingerabdruck';
 $labels['generate'] = 'erzeugen';
 $labels['generate_keys'] = 'Schlüsselpaar erzeugen';
 $labels['ident'] = 'Identität';
+$labels['import_completed'] = 'Import completed';
 $labels['import_failed'] = 'Konnte Schlüssel nicht importieren, vermutlich falsches Format.';
 $labels['import_fail'] = 'Import fehlgeschlagen';
 $labels['import_gen'] = 'Vorgang erfolgreich abgeschlossen! Den privaten Schlüssel bitte an einem sicheren Ort aufbewahren und vor Fremdzugriff schützen. Der Schlüssel wird NICHT auf den Server übertragen und steht nur in diesem Browser zur Verfügung!';
@@ -20,6 +22,8 @@ $labels['import'] = 'importieren';
 $labels['import_private'] = 'privaten Schlüssel importieren';
 $labels['import_public'] = 'öffentlichen Schlüssel importieren';
 $labels['invalid'] = 'fehlerhaft';
+$labels['key_generation_failed'] = 'Key generation failed';
+$labels['key_generation_completed'] = 'Key generation completed';
 $labels['key_id'] = 'Schlüssel-ID';
 $labels['key_manager'] = 'Schlüsselverwaltung';
 $labels['key_search'] = 'Schlüsselsuche';
@@ -34,6 +38,8 @@ $labels['search_no_keys'] = 'Es wurden keine zur Suchanfrage passenden Schlüsse
 $labels['status'] = 'Status';
 $labels['valid'] = 'Gültig';
 $labels['verify'] = 'Überprüfen';
+
+// key select
 $labels['incorrect_pass'] = 'Passwort falsch';
 $labels['none'] = 'Keines';
 $labels['selected'] = 'Ausgewählt';

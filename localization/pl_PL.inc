@@ -5,6 +5,7 @@ $labels['no_window_crypto'] = 'UWAGA! Twoja przeglądarka nie obsługuje bibliot
 
 // key manager
 $labels['action'] = 'Akcja';
+$labels['algorithm'] = 'Algorithm';
 $labels['bits'] = 'Bitów';
 $labels['delete'] = 'Usuń';
 $labels['delete_priv'] = 'Czy usunąć ten klucz prywatny?';
@@ -13,6 +14,7 @@ $labels['fingerprint'] = 'Odcisk';
 $labels['generate'] = 'Generuj';
 $labels['generate_keys'] = 'Generuj klucze';
 $labels['ident'] = 'Tożsamość';
+$labels['import_completed'] = 'Import completed';
 $labels['import_failed'] = 'Nie można zaimportować klucza, prawdopodobnie zły format pliku';
 $labels['import_fail'] = 'Import nieudany';
 $labels['import_gen'] = 'Sukces! Proszę zapisać swój klucz prywatny w bezpiecznym miejscu, najlepiej szyforwanym pliku. Twój klucz prywatny nie jest transferowany na serwer.';
@@ -20,6 +22,8 @@ $labels['import'] = 'Import';
 $labels['import_private'] = 'Import klucza prywatnego';
 $labels['import_public'] = 'Import klucza publicznego';
 $labels['invalid'] = 'Nieprawidłowe';
+$labels['key_generation_failed'] = 'Key generation failed';
+$labels['key_generation_completed'] = 'Key generation completed';
 $labels['key_id'] = 'ID Klucza';
 $labels['key_manager'] = 'Zarządzanie kluczami';
 $labels['key_search'] = 'Szukaj klucza';
@@ -34,6 +38,8 @@ $labels['search_no_keys'] = 'Żaden klucz nie pasuje do wyszukiwania, spróbuj i
 $labels['status'] = 'Status';
 $labels['valid'] = 'Prawidłowy';
 $labels['verify'] = 'Powtórz hasło';
+
+// key select
 $labels['incorrect_pass'] = 'Błędne hasło';
 $labels['none'] = 'brak';
 $labels['selected'] = 'Wybrany';

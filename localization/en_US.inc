@@ -5,6 +5,7 @@ $labels['no_window_crypto'] = 'WARNING! Your web browser does not support window
 
 // key manager
 $labels['action'] = 'Action';
+$labels['algorithm'] = 'Algorithm';
 $labels['bits'] = 'Bits';
 $labels['delete'] = 'Delete';
 $labels['delete_priv'] = 'Delete this private key?';
@@ -13,13 +14,16 @@ $labels['fingerprint'] = 'Fingerprint';
 $labels['generate'] = 'Generate';
 $labels['generate_keys'] = 'Generate key pair';
 $labels['ident'] = 'Identity';
+$labels['import_completed'] = 'Import completed';
 $labels['import_failed'] = 'Could not import key, possibly wrong format';
-$labels['import_fail'] = 'Import fail';
-$labels['import_gen'] = 'Great success! Please save your private key somewhere safe, preferably in an encrypted container. Your private key is not transferred to the server.';
+$labels['import_fail'] = 'Import failed';
+$labels['import_gen'] = 'Import completed. Save your private key safe, it is not stored on the server.';
 $labels['import'] = 'Import';
 $labels['import_private'] = 'Import private key';
 $labels['import_public'] = 'Import public key';
 $labels['invalid'] = 'Invalid';
+$labels['key_generation_failed'] = 'Key generation failed';
+$labels['key_generation_completed'] = 'Key generation completed';
 $labels['key_id'] = 'Key ID';
 $labels['key_manager'] = 'Key manager';
 $labels['key_search'] = 'Key search';

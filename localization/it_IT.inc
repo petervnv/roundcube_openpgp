@@ -5,6 +5,7 @@ $labels['no_window_crypto'] = 'ATTENZIONE! Il tuo browser non supporta window.cr
 
 // key manager
 $labels['action'] = 'Azione';
+$labels['algorithm'] = 'Algorithm';
 $labels['bits'] = 'Bit';
 $labels['delete'] = 'Elimina';
 $labels['delete_priv'] = 'Eliminare questa chiave privata?';
@@ -13,6 +14,7 @@ $labels['fingerprint'] = 'Fingerprint';
 $labels['generate'] = 'Genera';
 $labels['generate_keys'] = 'Genera chiavi';
 $labels['ident'] = 'Identità';
+$labels['import_completed'] = 'Import completed';
 $labels['import_failed'] = 'Impossibile importare la chiave, il formato potrebbe essere errato';
 $labels['import_fail'] = 'Importazione non riuscita';
 $labels['import_gen'] = 'Successo! Salva la tua chiave privata in un posto sicuro, meglio se su un supporto cifrato. La tua chiave proivata non verrà trasferita sul server.';
@@ -20,6 +22,8 @@ $labels['import'] = 'Importa';
 $labels['import_private'] = 'Importa chiave privata';
 $labels['import_public'] = 'Importa chiave pubblica';
 $labels['invalid'] = 'Non valida';
+$labels['key_generation_failed'] = 'Key generation failed';
+$labels['key_generation_completed'] = 'Key generation completed';
 $labels['key_id'] = 'Chiave ID';
 $labels['key_manager'] = 'Gestore Chiavi';
 $labels['key_search'] = 'Cerca chiave';
@@ -34,6 +38,8 @@ $labels['search_no_keys'] = 'Nessuna chiave corrisponde alla ricerca.';
 $labels['status'] = 'Stato';
 $labels['valid'] = 'Valido';
 $labels['verify'] = 'Verifica';
+
+// key select
 $labels['incorrect_pass'] = 'Passphrase non corretta';
 $labels['none'] = 'nessuno';
 $labels['selected'] = 'Selezionata';

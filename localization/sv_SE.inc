@@ -5,6 +5,7 @@ $labels['no_window_crypto'] = 'WARNING! Your web browser does not support window
 
 // key manager
 $labels['action'] = 'Action';
+$labels['algorithm'] = 'Algorithm';
 $labels['bits'] = 'Bitar';
 $labels['delete'] = 'Radera';
 $labels['delete_priv'] = 'Radera privat nyckel?';
@@ -13,6 +14,7 @@ $labels['fingerprint'] = 'Fingerprint';
 $labels['generate'] = 'Generera';
 $labels['generate_keys'] = 'Generera nycklar';
 $labels['ident'] = 'Identitet';
+$labels['import_completed'] = 'Import completed';
 $labels['import_failed'] = 'Det gick inte att importera nyckel, eventuellt fel format';
 $labels['import_fail'] = 'Kunde inte importera';
 $labels['import_gen'] = 'Spara din privata nyckel säkert någonstans, förslagsvis i en krypterad container. Din privata nyckel överförs inte till mailservern.';
@@ -20,6 +22,8 @@ $labels['import'] = 'Importera';
 $labels['import_private'] = 'Importera privat nyckel';
 $labels['import_public'] = 'Importera publik nyckel';
 $labels['invalid'] = 'Ogiltig';
+$labels['key_generation_failed'] = 'Key generation failed';
+$labels['key_generation_completed'] = 'Key generation completed';
 $labels['key_id'] = 'Nyckel-ID';
 $labels['key_manager'] = 'Nyckelhanterare';
 $labels['key_search'] = 'Sök nyckel';
@@ -34,6 +38,8 @@ $labels['search_no_keys'] = 'No keys matched your search, try another query.';
 $labels['status'] = 'Status';
 $labels['valid'] = 'Giltig';
 $labels['verify'] = 'Verifiera';
+
+// key select
 $labels['incorrect_pass'] = 'Fel lösenord';
 $labels['none'] = 'inga';
 $labels['selected'] = 'Vald';

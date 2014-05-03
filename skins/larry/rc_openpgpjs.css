@@ -22,21 +22,6 @@ ul.toolbarmenu li span.icon.key_manager {
   background: transparent;
   padding: 0;
 }
-#openpgpjs_tabs .ui-state-error.ui-corner-all,
-#openpgpjs_key_select .ui-state-error.ui-corner-all {
-  padding: 5px;
-  width: 400px;
-  margin-bottom: 5px;
-}
-#openpgpjs_tabs .ui-icon.ui-icon-alert,
-#openpgpjs_key_select .ui-icon.ui-icon-alert {
-  float: left;
-  margin-right: 5px;
-  margin-top: 10px;
-}
-#openpgpjs_key_select .ui-state-error.ui-corner-all {
-  width: 275px;
-}
 #openpgpjs_import textarea {
   width: 555px;
   height: 175px;
@@ -47,34 +32,28 @@ ul.toolbarmenu li span.icon.key_manager {
 #openpgpjs_search_results { width: 99%; overflow: scroll; }
 #openpgpjs_search_results tr:hover { background-color: #fff; }
 
-/* Additional styles for the message-objects <div> in mail view;
-   Roundcube only includes a "notice" style for this area.
-   These are used for display of signature status of received messages. */
-#message-objects div.confirmation,
-#message-objects div.error {
-        font-weight: bold;
-        padding: 6px 30px 6px 25px;
-        background: url(../../../../skins/larry/images/messages.png) 0 5px no-repeat;
-        cursor: default;
-        display: block;
-        white-space: normal;
+/* Additional styles for the messages in mail view and key manager.
+   Roundcube only includes a "notice" style for this area. */
+.manager-objects div {
+	margin: 8px;
+  width: 500px;
 }
-
-#message-objects div.confirmation {
-        color: #093;
-        border: 1px solid #093;
-        background-color: #9f9;
-        background-position: 5px -25px;
+div.messagepadding {
+  padding: 8px 12px 8px 30px !important;
 }
-
-#message-objects div.error {
-        color: #900;
-        border: 1px solid #900;
-        background-color: #f99;
-        background-position: 5px -55px;
+div.confirmation,
+div.error {
+  font-weight: bold;
+  background: #9f9 url(../../../../skins/larry/images/messages.png) 5px -25px no-repeat;
+  cursor: default;
+  display: block;
+  white-space: normal;
+  border: 1px solid #093;
+	color: #093;
 }
-
-#message-objects div.messagepadding {
-        padding: 8px 12px 8px 30px;
+div.error {
+  color: #900;
+  border: 1px solid #900;
+  background-color: #f99;
+	background-position: 5px -55px;
 }
-

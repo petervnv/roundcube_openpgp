@@ -5,6 +5,7 @@ $labels['no_window_crypto'] = 'WARNING! Your web browser does not support window
 
 // key manager
 $labels['action'] = 'Actie';
+$labels['algorithm'] = 'Algorithm';
 $labels['bits'] = 'Bits';
 $labels['delete'] = 'Verwijder';
 $labels['delete_priv'] = 'Verwijder deze geheime sleutel?';
@@ -13,6 +14,7 @@ $labels['fingerprint'] = 'Vingerafdruk';
 $labels['generate'] = 'Genereer';
 $labels['generate_keys'] = 'Genereer sleutels';
 $labels['ident'] = 'Identiteit';
+$labels['import_completed'] = 'Import completed';
 $labels['import_failed'] = 'Kan sleutel niet importeren, mogelijk verkeerd formaat';
 $labels['import_fail'] = 'Importeren mislukt';
 $labels['import_gen'] = 'Groot success! Bewaar je sleutels ergens veilig, bij voorkeur in een versleutelde container. Sleutels zijn niet verzonden naar de server.';
@@ -20,6 +22,8 @@ $labels['import'] = 'Importeer';
 $labels['import_private'] = 'Importeer geheime sleutel';
 $labels['import_public'] = 'Importeer publieke sleutel';
 $labels['invalid'] = 'Ongeldig';
+$labels['key_generation_failed'] = 'Key generation failed';
+$labels['key_generation_completed'] = 'Key generation completed';
 $labels['key_id'] = 'Sleutel ID';
 $labels['key_manager'] = 'Sleutel beheer';
 $labels['key_search'] = 'Sleutel zoeken';
@@ -34,6 +38,8 @@ $labels['search_no_keys'] = 'No keys matched your search, try another query.';
 $labels['status'] = 'Status';
 $labels['valid'] = 'Geldig';
 $labels['verify'] = 'Verifieer';
+
+// key select
 $labels['incorrect_pass'] = 'Incorrect wachtwoord';
 $labels['none'] = 'geen';
 $labels['selected'] = 'Geselecteerd';
