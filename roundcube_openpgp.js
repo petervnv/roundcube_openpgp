@@ -145,25 +145,28 @@ rcube_webmail.prototype.openpgp_message_received = function()
   this.openpgp_display_key_info(message);
 
   var sender = this.openpgp_get_sender();
-  var publicKeys = keyring.publicKeys.getForAddress(sender);
+  var publicKey = keyring.publicKeys.getForAddress(sender);
+  
   // check if sender public key is found
-  if (!publicKeys.length) {
+  if (publicKey.length !== 1) {
     this.openpgp_display_message(rcmail.gettext('signature_invalid_no_pubkey', 'rc_openpgpjs') + sender, 'notice', 'message-objects');
     return false;
   }
 
   // message is cleartext signed
   if (cleartext) {
-    // verify signature of cleartext messagess
-    if (message.verify(publicKeys)) {
-      this.openpgp_display_message(this.gettext('signature_valid', 'rc_openpgpjs') + ' (' + sender + ')', 'confirmation', 'message-objects');
-      $("#messagebody div.message-part pre").html(this.openpgp_escape_html(message.text));
-      return true;
-    }
-
-    // invalid signature
-    this.openpgp_display_message(this.gettext('signature_invalid', 'rc_openpgpjs'), 'error', 'message-objects');
-    return false;
+    // verify signature of clear signed message
+    openpgp.verifyClearSignedMessage(publicKey, cleartext, function(err, data) {
+      // valid signature
+      if (data) {
+        rcmail.openpgp_display_message(rcmail.gettext('signature_valid', 'rc_openpgpjs') + ' (' + sender + ')', 'confirmation', 'message-objects');
+        $("#messagebody div.message-part pre").html(rcmail.openpgp_escape_html(message.text));
+        return true;
+      }
+      // invalid signature
+      rcmail.openpgp_display_message(rcmail.gettext('signature_invalid', 'rc_openpgpjs'), 'error', 'message-objects');
+      return false;
+    });
   } else {
     // check if there are private key imported in the key manager
     if (!this.openpgp_private_key_count()) {
@@ -189,7 +192,7 @@ rcube_webmail.prototype.openpgp_message_received = function()
 
     // decrypt message
     var decrypting = this.display_message('Decrypting message', 'loading');
-    openpgp.decryptAndVerifyMessage(privateKey.keys[0], publicKeys, message, function(err, data) {
+    openpgp.decryptAndVerifyMessage(privateKey.keys[0], publicKey, message, function(err, data) {
       if (data) {
         if (data.signatures.length > 0) {
           this.openpgp_display_message(this.gettext('signature_valid', 'rc_openpgpjs') + ' (' + sender + ')' , 'confirmation', 'message-objects');
