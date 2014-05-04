@@ -223,7 +223,7 @@ rcube_webmail.prototype.openpgp_message_received = function()
       if (data) {
         if (data.signatures.length > 0) {
           rcmail.openpgp_display_message(
-            this.gettext('signature_valid', 'roundcube_openpgp') + ' (' + sender + ')' ,
+            rcmail.gettext('signature_valid', 'roundcube_openpgp') + ' (' + sender + ')' ,
             'confirmation',
             'message-objects'
           );
@@ -233,12 +233,12 @@ rcube_webmail.prototype.openpgp_message_received = function()
         rcmail.display_message(
           'Message decrypted',
           'confirmation',
-          this.message_time
+          rcmail.message_time
         );
         return true;
       }
       rcmail.openpgp_display_message(
-        this.gettext('key_mismatch', 'roundcube_openpgp'),
+        rcmail.gettext('key_mismatch', 'roundcube_openpgp'),
         'error',
         'message-objects'
       );
