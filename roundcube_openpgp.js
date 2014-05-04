@@ -454,13 +454,11 @@ rcube_webmail.prototype.openpgp_senders_public_key = function(armored)
 
   var re = /[a-zA-Z0-9\._%+-]+@[a-zA-Z0-9\._%+-]+\.[a-zA-Z]{2,4}/g;
   var address = $("#_from>option:selected").html().match(re);
-
   if (address.length > 0) {
     var publicKey = keyring.publicKeys.getForAddress(address[0]);
-
     if (typeof(publicKey[0]) != "undefined") {
       if (armored) {
-        return publicKey[0].armored;
+        return publicKey[0].armor();
       } else {
         return publicKey[0];
       }
@@ -498,7 +496,7 @@ rcube_webmail.prototype.openpgp_before_send = function()
   var pubkey_sender = this.openpgp_senders_public_key(true);
   if (pubkey_sender) {
     var lock = this.set_busy(true, 'loading');
-    this.http_post('plugin.pubkey_save', { _pubkey: pubkey_sender }, lock);
+    this.http_post('plugin.write_public_key', { _publickey: pubkey_sender }, lock);
   }
 
   // message to encrypt and / or sign

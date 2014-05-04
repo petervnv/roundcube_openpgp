@@ -42,7 +42,7 @@ class roundcube_openpgp extends rcube_plugin {
 
     // register actions
     $this->register_action('plugin.pks_search', array($this, 'hkp_search'));
-    $this->register_action('plugin.pubkey_save', array($this, 'pubkey_save'));
+    $this->register_action('plugin.write_public_key', array($this, 'write_public_key'));
 
     // load css
     $this->include_stylesheet($this->local_skin_path() . '/roundcube_openpgp.css');
@@ -241,19 +241,6 @@ class roundcube_openpgp extends rcube_plugin {
   }
 
   /**
-   * Saves the public key to a temporary file so we can send it as attachment
-   */
-  function pubkey_save() {
-    $rcmail = rcmail::get_instance();
-    $temp_dir = unslashify($rcmail->config->get('temp_dir'));
-    $file = $temp_dir."/".md5($_SESSION['username']).".asc";
-    if(file_exists($file)) {
-      $pubkey = trim(get_input_value('_pubkey', RCUBE_INPUT_POST));
-      file_put_contents($file, $pubkey);
-    }
-  }
-
-  /**
    * Handler for preferences_sections_list hook.
    * Adds OpenPGP settings sections into preferences sections list.
    *
@@ -350,10 +337,13 @@ class roundcube_openpgp extends rcube_plugin {
 
   /**
    * Handler for message_compose hook
-   * Attaches public key
+   * Attaches dummy public key
+   * 
+   * @param array Original parameters
+   * @return array Modified parameters
    */
   function attach_public_key($args) {
-    if ($f = $this->create_pubkey_dummy()) {
+    if ($f = $this->write_public_key()) {
       $args['attachments'][] = array('path' => $f, 'name' => "pubkey.asc", 'mimetype' => "text/plain");
     }
     return $args;
@@ -373,16 +363,26 @@ class roundcube_openpgp extends rcube_plugin {
   }
 
   /**
-   * Creates a dummy public key file
+   * Writes public key to attachment file, on compose it writes a
+   * dummy which is later replaced by the used public key in.
    */
-  function create_pubkey_dummy() {
+  function write_public_key() {
     $rcmail = rcmail::get_instance();
     $temp_dir = unslashify($rcmail->config->get('temp_dir'));
+    // temporary directory exists
     if (!empty($temp_dir)) {
       $file = $temp_dir."/".md5($_SESSION['username']).".asc";
-      if(file_exists($file))
+      if(file_exists($file)) {
         @unlink($file);
-      if (file_put_contents($file, " ")) {
+      }
+      
+      // write public key
+      $content = ' ';
+      $publicKey = trim(get_input_value('_publickey', RCUBE_INPUT_POST));
+      if ($publicKey != '') {
+        $content = $publicKey;
+      }
+      if (file_put_contents($file, $content)) {
         return $file;
       }
     }
