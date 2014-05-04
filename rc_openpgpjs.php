@@ -35,10 +35,17 @@ class rc_openpgpjs extends rcube_plugin {
     $this->rc = rcube::get_instance();
     $this->rm = rcmail::get_instance();
 
+    // load configuration
+    $this->load_config();
+
     $this->add_hook('user_create', array($this, 'user_create'));
+
+    // register actions
     $this->register_action('plugin.pks_search', array($this, 'hkp_search'));
-    $this->register_action('plugin.hkp_add', array($this, 'hkp_add'));
     $this->register_action('plugin.pubkey_save', array($this, 'pubkey_save'));
+
+    // load css
+    $this->include_stylesheet($this->local_skin_path() . '/rc_openpgpjs.css');
 
     if ($this->rc->task == 'mail') {
       $this->add_hook('render_page', array($this, 'render_page'));
@@ -50,13 +57,11 @@ class rc_openpgpjs extends rcube_plugin {
       $this->include_script('lib/openpgp.min.js');
       $this->include_script('roundcube_openpgp.js');
 
-      // load css
-      $this->include_stylesheet($this->local_skin_path() . '/rc_openpgpjs.css');
-
       // add public key attachment related hooks
-      $this->add_hook('message_compose', array($this, 'message_compose'));
-      $this->add_hook('message_sent', array($this, 'unlink_pubkey'));
-
+      if ($this->rc->config->get('attach_public_key', true)) {
+        $this->add_hook('message_compose', array($this, 'attach_public_key'));
+        $this->add_hook('message_sent', array($this, 'delete_public_key'));
+      }
       if ($this->api->output->type == 'html') {
         // add key manager item to message menu
         $opts = array("command"    => "open-key-manager",
@@ -68,6 +73,11 @@ class rc_openpgpjs extends rcube_plugin {
         $this->api->add_content(html::tag('li', null, $this->api->output->button($opts)), "messagemenu");
 
         if ($this->rc->action == 'compose') {
+          // make some setting available on client
+          $settings = array();
+          $settings['warn_on_unencrypted'] = $this->rc->config->get('warn_on_unencrypted');
+          $this->rc->output->set_env('openpgp_settings', $settings);
+
           // add key manager button to compose toolbar
           $opts = array("command"    => "open-key-manager",
                         "label"      => "rc_openpgpjs.key_manager",
@@ -104,6 +114,7 @@ class rc_openpgpjs extends rcube_plugin {
       $this->add_texts('localization/', false);
 
       // add hooks for OpenPGP settings
+      $this->add_hook('preferences_sections_list', array($this, 'preferences_sections_list'));
       $this->add_hook('preferences_list', array($this, 'preferences_list'));
       $this->add_hook('preferences_save', array($this, 'preferences_save'));
     }
@@ -229,13 +240,6 @@ class rc_openpgpjs extends rcube_plugin {
     }
   }
 
-// TODO: Store pubkeys in rc storage
-// Don't sync upstream, it hurts decentralization
-  function hkp_add() {
-    header("HTTP/1.1 501 Not Implemented");
-    die();
-  }
-
   /**
    * Saves the public key to a temporary file so we can send it as attachment
    */
@@ -250,45 +254,95 @@ class rc_openpgpjs extends rcube_plugin {
   }
 
   /**
-   * Handler for preferences_list hook.
-   * Adds options blocks into Compose settings sections in Preferences.
+   * Handler for preferences_sections_list hook.
+   * Adds OpenPGP settings sections into preferences sections list.
    *
    * @param array Original parameters
    * @return array Modified parameters
    */
-  function preferences_list($p) {
-    if ($p['section'] == 'compose') {
-      $p['blocks']['openpgp']['name'] = $this->gettext('openpgp_options');
-
-      $field_id = 'rcmfd_encrypt';
-      $encrypt = new html_checkbox(array('name' => '_encrypt', 'id' => $field_id, 'value' => 1));
-      $p['blocks']['openpgp']['options']['encrypt'] = array(
-        'title' => html::label($field_id, Q($this->gettext('always_encrypt'))),
-        'content' => $encrypt->show($this->rc->config->get('encrypt', false)?1:0),
-      );
-
-      $field_id = 'rcmfd_sign';
-      $sign = new html_checkbox(array('name' => '_sign', 'id' => $field_id, 'value' => 1));
-      $p['blocks']['openpgp']['options']['sign'] = array(
-        'title' => html::label($field_id, Q($this->gettext('always_sign'))),
-        'content' => $sign->show($this->rc->config->get('sign', false)?1:0),
-      );
-    }
+  function preferences_sections_list($p)
+  {
+    $p['list']['openpgp'] = array(
+      'id' => 'openpgp',
+      'section' => $this->gettext('openpgp'),
+    );
 
     return $p;
   }
 
   /**
+   * Handler for preferences_list hook.
+   * Adds options blocks into OpenPGP settings sections in Preferences.
+   *
+   * @param array Original parameters
+   * @return array Modified parameters
+   */
+  function preferences_list($p) {
+    if ($p['section'] != 'openpgp') {
+      return $p;
+    }
+
+    $no_override = array_flip((array)$this->rc->config->get('dont_override'));
+
+    $p['blocks']['openpgp']['name'] = $this->gettext('mainoptions');
+
+    // always encrypt messages
+    if (!isset($no_override['encrypt'])) {
+      $field_id = 'rcmfd_encrypt';
+      $encrypt = new html_checkbox(array('name' => '_encrypt', 'id' => $field_id, 'value' => 1));
+      $p['blocks']['openpgp']['options']['encrypt'] = array(
+        'title' => html::label($field_id, Q($this->gettext('always_encrypt'))),
+        'content' => $encrypt->show($this->rc->config->get('encrypt', true)?1:0),
+      );
+    }
+
+    // always sign messages
+    if (!isset($no_override['sign'])) {
+      $field_id = 'rcmfd_sign';
+      $sign = new html_checkbox(array('name' => '_sign', 'id' => $field_id, 'value' => 1));
+      $p['blocks']['openpgp']['options']['sign'] = array(
+        'title' => html::label($field_id, Q($this->gettext('always_sign'))),
+        'content' => $sign->show($this->rc->config->get('sign', true)?1:0),
+      );
+    }
+
+    // automatically attach public key to messages
+    if (!isset($no_override['attach_public_key'])) {
+      $field_id = 'rcmfd_attach_public_key';
+      $attach_public_key = new html_checkbox(array('name' => '_attach_public_key', 'id' => $field_id, 'value' => 1));
+      $p['blocks']['openpgp']['options']['attach_public_key'] = array(
+        'title' => html::label($field_id, Q($this->gettext('attach_public_key'))),
+        'content' => $attach_public_key->show($this->rc->config->get('attach_public_key', true)?1:0),
+      );
+    }
+
+    // warn on sending an unencrypted message
+    if (!isset($no_override['warn_on_unencrypted'])) {
+      $field_id = 'rcmfd_warn_on_unencrypted';
+      $warn_on_unencrypted = new html_checkbox(array('name' => '_warn_on_unencrypted', 'id' => $field_id, 'value' => 1));
+      $p['blocks']['openpgp']['options']['warn_on_unencrypted'] = array(
+        'title' => html::label($field_id, Q($this->gettext('warn_on_unencrypted'))),
+        'content' => $warn_on_unencrypted->show($this->rc->config->get('warn_on_unencrypted', true)?1:0),
+      );
+    }
+    return $p;
+  }
+
+  /**
    * Handler for preferences_save hook.
-   * Executed on Compose settings form submit.
+   * Executed on OpenPGP settings form submit.
    *
    * @param array Original parameters
    * @return array Modified parameters
    */
   function preferences_save($p) {
-    if ($p['section'] == 'compose') {
-      $p['prefs']['encrypt'] = get_input_value('_encrypt', RCUBE_INPUT_POST) ? true : false;
-      $p['prefs']['sign'] = get_input_value('_sign', RCUBE_INPUT_POST) ? true : false;
+    if ($p['section'] == 'openpgp') {
+      $p['prefs'] = array(
+        'encrypt'             => get_input_value('_encrypt', RCUBE_INPUT_POST) ? true : false,
+        'sign'                => get_input_value('_sign', RCUBE_INPUT_POST) ? true : false,
+        'attach_public_key'   => get_input_value('_attach_public_key', RCUBE_INPUT_POST) ? true : false,
+        'warn_on_unencrypted' => get_input_value('_warn_on_unencrypted', RCUBE_INPUT_POST) ? true : false,
+      );
     }
 
     return $p;
@@ -296,9 +350,9 @@ class rc_openpgpjs extends rcube_plugin {
 
   /**
    * Handler for message_compose hook
-   * Creates a dummy publick key attachment
+   * Attaches public key
    */
-  function message_compose($args) {
+  function attach_public_key($args) {
     if ($f = $this->create_pubkey_dummy()) {
       $args['attachments'][] = array('path' => $f, 'name' => "pubkey.asc", 'mimetype' => "text/plain");
     }
@@ -309,7 +363,7 @@ class rc_openpgpjs extends rcube_plugin {
    * Handler for message_sent hook
    * Deletes the public key from the server
    */
-  function unlink_pubkey($args) {
+  function delete_public_key($args) {
     $rcmail = rcmail::get_instance();
     $temp_dir = unslashify($rcmail->config->get('temp_dir'));
     $file = $temp_dir."/".md5($_SESSION['username']).".asc";

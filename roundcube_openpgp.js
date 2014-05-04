@@ -24,92 +24,94 @@
 
 // load OpenPGP.js and keyring
 var openpgp = typeof window !== 'undefined' && window.openpgp ? window.openpgp : require('openpgp'),
-  keyring = new openpgp.Keyring();
+  keyring = new openpgp.Keyring(),
+  settings;
 
 // initiate OpenPGP.js web worker
-openpgp.initWorker('plugins/rc_openpgpjs/js/openpgp.worker.min.js');
+openpgp.initWorker('plugins/rc_openpgpjs/lib/openpgp.worker.min.js');
 
+window.rcmail && rcmail.addEventListener('init', function(evt) {
+  // check if window.crypto.getRandomValues is present
+  if (!window.crypto || !window.crypto.getRandomValues) {
+    rcmail.display_message(rcmail.gettext("no_window_crypto", "rc_openpgpjs"), "error");
+  }
+  
+  rcmail.passphrase = "";
+  rcmail.addEventListener("plugin.pks_search", rcmail.openpgp_pks_search_callback);
 
-if (window.rcmail) {
-  rcmail.addEventListener("init", function () {
-    // check if window.crypto.getRandomValues is present
-    if (!window.crypto || !window.crypto.getRandomValues) {
-      rcmail.display_message(rcmail.gettext("no_window_crypto", "rc_openpgpjs"), "error");
-    }
+  if (sessionStorage.length > 0) {
+    rcmail.passphrase = sessionStorage[0];
+  }
 
-    rcmail.passphrase = "";
-    rcmail.addEventListener("plugin.pks_search", rcmail.openpgp_pks_search_callback);
-
-    if (sessionStorage.length > 0) {
-      rcmail.passphrase = sessionStorage[0];
-    }
-
-    // key selector
-    $("#openpgpjs_key_select").dialog({
-      modal: true,
-      autoOpen: false,
-      title: rcmail.gettext("key_select", "rc_openpgpjs"),
-      width: "600px",
-      open: function () {
-        rcmail.openpgp_update_key_selector();
-      },
-      close: function () {
-        $("#selected_key_passphrase").val("");
-        $("#openpgpjs_rememberpass").attr("checked", false);
-      }
-    });
-
-    // key manager
-    $("#openpgpjs_key_manager").dialog({
-      modal: true,
-      autoOpen: false,
-      title: rcmail.gettext("key_manager", "rc_openpgpjs"),
-      width: "1100px",
-      open: function () {
-        rcmail.openpgp_update_key_manager();
-      },
-      close: function () {
-        // empty message containers
-        $(".manager-objects").html("");
-      }
-    });
-    $("#openpgpjs_tabs").tabs();
-
-    // register open key manager command
-    rcmail.register_command("open-key-manager", function () {
-      $("#openpgpjs_key_manager").dialog("open");
-    });
-    rcmail.enable_command("open-key-manager", true);
-
-    // composing messages
-    if (rcmail.env.action === "compose") {
-      rcmail.addEventListener("change_identity", function () {
-        sessionStorage.clear();
-        rcmail.passphrase = "";
-      });
-      // disable draft autosave and prompt user when saving plaintext message as draft
-      rcmail.env.draft_autosave = 0;
-      rcmail.addEventListener("beforesavedraft", function () {
-        if ($("#openpgpjs_encrypt").is(":checked")) {
-          if (!confirm(rcmail.gettext("save_draft_confirm", "rc_openpgpjs"))) {
-            return false;
-          }
-        }
-        return true;
-      });
-
-      rcmail.env.compose_commands.push("open-key-manager");
-      rcmail.addEventListener("beforesend", function (e) {
-        if (!rcmail.openpgp_before_send()) {
-          return false;
-        }
-      });
-    // process received message
-    } else if (rcmail.env.action === "show" || rcmail.env.action === "preview") {
-      rcmail.openpgp_message_received();
+  // key selector
+  $("#openpgpjs_key_select").dialog({
+    modal: true,
+    autoOpen: false,
+    title: rcmail.gettext("key_select", "rc_openpgpjs"),
+    width: "600px",
+    open: function () {
+      rcmail.openpgp_update_key_selector();
+    },
+    close: function () {
+      $("#selected_key_passphrase").val("");
+      $("#openpgpjs_rememberpass").attr("checked", false);
     }
   });
-}
+
+  // key manager
+  $("#openpgpjs_key_manager").dialog({
+    modal: true,
+    autoOpen: false,
+    title: rcmail.gettext("key_manager", "rc_openpgpjs"),
+    width: "1100px",
+    open: function () {
+      rcmail.openpgp_update_key_manager();
+    },
+    close: function () {
+      // empty message containers
+      $(".manager-objects").html("");
+    }
+  });
+  $("#openpgpjs_tabs").tabs();
+
+  // register open key manager command
+  rcmail.register_command("open-key-manager", function () {
+    $("#openpgpjs_key_manager").dialog("open");
+  });
+  rcmail.enable_command("open-key-manager", true);
+
+  // composing messages
+  if (rcmail.env.action === "compose") {
+    // load openpgp settings
+    settings = rcmail.env.openpgp_settings;
+  
+    rcmail.addEventListener("change_identity", function () {
+      sessionStorage.clear();
+      rcmail.passphrase = "";
+    });
+
+    // disable draft autosave and prompt user when saving plaintext message as draft
+    rcmail.env.draft_autosave = 0;
+    rcmail.addEventListener("beforesavedraft", function () {
+      if ($("#openpgpjs_encrypt").is(":checked")) {
+        if (!confirm(rcmail.gettext("save_draft_confirm", "rc_openpgpjs"))) {
+          return false;
+        }
+      }
+      return true;
+    });
+
+    rcmail.env.compose_commands.push("open-key-manager");
+    rcmail.addEventListener("beforesend", function (e) {
+      if (!rcmail.openpgp_before_send()) {
+        return false;
+      }
+    });
+  // process received message
+  } else if (rcmail.env.action === "show" || rcmail.env.action === "preview") {
+    rcmail.openpgp_message_received();
+  }
+});
 
 
 /**
@@ -119,7 +121,6 @@ rcube_webmail.prototype.openpgp_message_received = function()
 {
   // get armored message
   var msg_armor = $("#messagebody div.message-part pre").html();
-
 
   // OpenPGP failed parsing the message, no action required.
   if (!msg_armor) {
@@ -471,13 +472,15 @@ rcube_webmail.prototype.openpgp_before_send = function()
   // no encryption and / or signing
   if (!$("#openpgpjs_encrypt").is(":checked") &&
       !$("#openpgpjs_sign").is(":checked")) {
-    if (confirm(this.gettext("continue_unencrypted", "rc_openpgpjs"))) {
-      // remove the public key attachment since we don't sign nor encrypt the message
-      this.openpgp_remove_public_key_attachment();
-      return true;
-    } else {
+    if (settings.warn_on_unencrypted) {
+      if (confirm(this.gettext("continue_unencrypted", "rc_openpgpjs"))) {
+        // remove the public key attachment since we don't sign nor encrypt the message
+        this.openpgp_remove_public_key_attachment();
+        return true;
+      }
       return false;
     }
+    return true;
   }
 
   // message is already processed

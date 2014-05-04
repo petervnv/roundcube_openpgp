@@ -8,6 +8,12 @@ ul.toolbarmenu li span.icon.key_manager {
 .toolbar a.button.key_manager {
   background: url("images/lock.png") center -2px no-repeat;
 }
+#sections-table #rcmrowopenpgp td.section {
+  background: url("images/openpgp.png") 4px 0px no-repeat;
+}
+#sections-table #rcmrowopenpgp.selected td.section {
+  background-position: 4px -23px;
+}
 #openpgpjs_key_manager.popupdialog,
 #openpgpjs_key_manager.ui-dialog-content {
   padding: 0;

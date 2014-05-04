@@ -47,11 +47,13 @@ $labels['key_select'] = 'Select key';
 
 // settings
 $labels['always_encrypt'] = 'Always encrypt messages';
-$labels['always_sign'] = 'Always sign messages'; 
-$labels['openpgp_options'] = 'OpenPGP Options';
+$labels['always_sign'] = 'Always sign messages';
+$labels['attach_public_key'] = 'Automatically attach public key';
+$labels['openpgp'] = 'OpenPGP';
+$labels['warn_on_unencrypted'] = 'Warn on sending an unencrypted message';
 
 // compose
-$labels['continue_unencrypted'] = 'Continue sending unencrypted and unsigned email?'; 
+$labels['continue_unencrypted'] = 'Continue sending unencrypted and unsigned email?';
 $labels['encrypt'] = 'Encrypt';
 $labels['enter_pass'] = 'Please enter passphrase';
 $labels['no_keys'] = 'Please generate or import keys in the key manager!';
