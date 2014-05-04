@@ -7,7 +7,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
     <uri>https://github.com/lazlolazlolazlo/roundcube_openpgp</uri>
     <summary>OpenPGP plugin for Roundcube</summary>
     <description>
-    Roundcube plugin adding OpenPGP support using OpenPGPOpenPGP.js
+    Roundcube plugin adding OpenPGP support using OpenPGP.js
     </description>
     <lead>
         <name>Lazlo Westerhof</name>

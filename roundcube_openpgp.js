@@ -1,5 +1,5 @@
 /**
- * Roundcube plugin adding OpenPGP support using OpenPGPOpenPGP.js
+ * Roundcube plugin adding OpenPGP support using OpenPGP.js
  *
  * @version @package_version@
  * @author Lazlo Westerhof <hello@lazlo.me>
