@@ -30,7 +30,6 @@ ul.toolbarmenu li span.icon.key_manager {
 .clickme:hover { background-color: #fff; }
 #generated_private, #generated_public { width: 45%; float: left; text-align: left; font-size: 7pt; }
 #openpgpjs_search_results { width: 99%; overflow: scroll; }
-#openpgpjs_search_results tr:hover { background-color: #fff; }
 
 /* Additional styles for the messages in mail view and key manager.
    Roundcube only includes a "notice" style for this area. */
@@ -38,11 +37,14 @@ ul.toolbarmenu li span.icon.key_manager {
 	margin: 8px;
   width: 500px;
 }
-div.messagepadding {
+.manager-objects div.messagepadding,
+#message-objects div.messagepadding {
   padding: 8px 12px 8px 30px !important;
 }
-div.confirmation,
-div.error {
+.manager-objects div.confirmation,
+.manager-objects div.error,
+#message-objects div.confirmation,
+#message-objects div.error {
   font-weight: bold;
   background: #9f9 url(../../../../skins/larry/images/messages.png) 5px -25px no-repeat;
   cursor: default;
@@ -51,7 +53,8 @@ div.error {
   border: 1px solid #093;
 	color: #093;
 }
-div.error {
+.manager-objects div.error,
+#message-objects div.error {
   color: #900;
   border: 1px solid #900;
   background-color: #f99;
