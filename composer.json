@@ -1,0 +1,24 @@
+{
+    "name": "roundcube_openpgp",
+    "type": "roundcube-plugin",
+    "description": "Roundcube plugin adding OpenPGP support using OpenPGPOpenPGP.js",
+    "license": "GNU GPLv2",
+    "version": "0.2",
+    "authors": [
+        {
+            "name": "Lazlo Westerhof",
+            "email": "hello@lazlo.me",
+            "role": "Lead"
+        }
+    ],
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "http://plugins.roundcube.net"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.1",
+        "roundcube/plugin-installer": ">=0.1.3"
+    }
+}

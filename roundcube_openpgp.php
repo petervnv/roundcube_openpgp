@@ -24,7 +24,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-class rc_openpgpjs extends rcube_plugin {
+class roundcube_openpgp extends rcube_plugin {
   public $task = 'mail|settings';
   public $rc;
 
@@ -45,7 +45,7 @@ class rc_openpgpjs extends rcube_plugin {
     $this->register_action('plugin.pubkey_save', array($this, 'pubkey_save'));
 
     // load css
-    $this->include_stylesheet($this->local_skin_path() . '/rc_openpgpjs.css');
+    $this->include_stylesheet($this->local_skin_path() . '/roundcube_openpgp.css');
 
     if ($this->rc->task == 'mail') {
       $this->add_hook('render_page', array($this, 'render_page'));
@@ -65,7 +65,7 @@ class rc_openpgpjs extends rcube_plugin {
       if ($this->api->output->type == 'html') {
         // add key manager item to message menu
         $opts = array("command"    => "open-key-manager",
-                      "label"      => "rc_openpgpjs.key_manager",
+                      "label"      => "roundcube_openpgp.key_manager",
                       "type"       => "link",
                       "classact"   => "icon active",
                       "class"      => "icon",
@@ -80,7 +80,7 @@ class rc_openpgpjs extends rcube_plugin {
 
           // add key manager button to compose toolbar
           $opts = array("command"    => "open-key-manager",
-                        "label"      => "rc_openpgpjs.key_manager",
+                        "label"      => "roundcube_openpgp.key_manager",
                         "type"       => "link",
                         "classact"   => "button active key_manager",
                         "class"      => "button key_manager");

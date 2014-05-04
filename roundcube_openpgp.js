@@ -4,7 +4,10 @@
  * @version @package_version@
  * @author Lazlo Westerhof <hello@lazlo.me>
  * @author Niklas Femerstrand <nik@qnrq.se>
- *
+ * 
+ * @licstart  The following is the entire license notice for the
+ * JavaScript code in this file.
+ * 
  * Copyright (C) 2013 Niklas Femerstrand <nik@qnrq.se>
  * Copyright (C) 2013-2014, Lazlo Westerhof <hello@lazlo.me>
  *
@@ -20,6 +23,9 @@
  * You should have received a copy of the GNU General Public License along
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * 
+ * @licend  The above is the entire license notice
+ * for the JavaScript code in this file.
  */
 
 // load OpenPGP.js and keyring
@@ -28,12 +34,12 @@ var openpgp = typeof window !== 'undefined' && window.openpgp ? window.openpgp :
   settings;
 
 // initiate OpenPGP.js web worker
-openpgp.initWorker('plugins/rc_openpgpjs/lib/openpgp.worker.min.js');
+openpgp.initWorker('plugins/roundcube_openpgp/lib/openpgp.worker.min.js');
 
 window.rcmail && rcmail.addEventListener('init', function(evt) {
   // check if window.crypto.getRandomValues is present
   if (!window.crypto || !window.crypto.getRandomValues) {
-    rcmail.display_message(rcmail.gettext("no_window_crypto", "rc_openpgpjs"), "error");
+    rcmail.display_message(rcmail.gettext("no_window_crypto", "roundcube_openpgp"), "error");
   }
   
   rcmail.passphrase = "";
@@ -47,7 +53,7 @@ window.rcmail && rcmail.addEventListener('init', function(evt) {
   $("#openpgpjs_key_select").dialog({
     modal: true,
     autoOpen: false,
-    title: rcmail.gettext("key_select", "rc_openpgpjs"),
+    title: rcmail.gettext("key_select", "roundcube_openpgp"),
     width: "600px",
     open: function () {
       rcmail.openpgp_update_key_selector();
@@ -62,7 +68,7 @@ window.rcmail && rcmail.addEventListener('init', function(evt) {
   $("#openpgpjs_key_manager").dialog({
     modal: true,
     autoOpen: false,
-    title: rcmail.gettext("key_manager", "rc_openpgpjs"),
+    title: rcmail.gettext("key_manager", "roundcube_openpgp"),
     width: "1100px",
     open: function () {
       rcmail.openpgp_update_key_manager();
@@ -94,7 +100,7 @@ window.rcmail && rcmail.addEventListener('init', function(evt) {
     rcmail.env.draft_autosave = 0;
     rcmail.addEventListener("beforesavedraft", function () {
       if ($("#openpgpjs_encrypt").is(":checked")) {
-        if (!confirm(rcmail.gettext("save_draft_confirm", "rc_openpgpjs"))) {
+        if (!confirm(rcmail.gettext("save_draft_confirm", "roundcube_openpgp"))) {
           return false;
         }
       }
@@ -153,7 +159,7 @@ rcube_webmail.prototype.openpgp_message_received = function()
   // check if sender public key is found
   if (publicKey.length !== 1) {
     this.openpgp_display_message(
-      rcmail.gettext('signature_invalid_no_pubkey', 'rc_openpgpjs') + sender,
+      rcmail.gettext('signature_invalid_no_pubkey', 'roundcube_openpgp') + sender,
       'notice',
       'message-objects'
     );
@@ -167,7 +173,7 @@ rcube_webmail.prototype.openpgp_message_received = function()
       // valid signature
       if (data) {
         rcmail.openpgp_display_message(
-          rcmail.gettext('signature_valid', 'rc_openpgpjs') + ' (' + sender + ')',
+          rcmail.gettext('signature_valid', 'roundcube_openpgp') + ' (' + sender + ')',
           'confirmation',
           'message-objects'
         );
@@ -176,7 +182,7 @@ rcube_webmail.prototype.openpgp_message_received = function()
       }
       // invalid signature
       rcmail.openpgp_display_message(
-        rcmail.gettext('signature_invalid', 'rc_openpgpjs'),
+        rcmail.gettext('signature_invalid', 'roundcube_openpgp'),
         'error',
         'message-objects'
       );
@@ -186,7 +192,7 @@ rcube_webmail.prototype.openpgp_message_received = function()
     // check if there are private key imported in the key manager
     if (!this.openpgp_private_key_count()) {
       this.display_message(
-        this.gettext("no_key_imported", "rc_openpgpjs"),
+        this.gettext("no_key_imported", "roundcube_openpgp"),
         "error"
       );
       return false;
@@ -204,7 +210,7 @@ rcube_webmail.prototype.openpgp_message_received = function()
     var privateKey = openpgp.key.readArmored(privateKeyArmored);
 
     if (!privateKey.keys[0].decrypt(passobj.passphrase)) {
-      alert(this.gettext("incorrect_pass", "rc_openpgpjs"));
+      alert(this.gettext("incorrect_pass", "roundcube_openpgp"));
       return false;
     }
 
@@ -217,7 +223,7 @@ rcube_webmail.prototype.openpgp_message_received = function()
       if (data) {
         if (data.signatures.length > 0) {
           rcmail.openpgp_display_message(
-            this.gettext('signature_valid', 'rc_openpgpjs') + ' (' + sender + ')' ,
+            this.gettext('signature_valid', 'roundcube_openpgp') + ' (' + sender + ')' ,
             'confirmation',
             'message-objects'
           );
@@ -232,7 +238,7 @@ rcube_webmail.prototype.openpgp_message_received = function()
         return true;
       }
       rcmail.openpgp_display_message(
-        this.gettext('key_mismatch', 'rc_openpgpjs'),
+        this.gettext('key_mismatch', 'roundcube_openpgp'),
         'error',
         'message-objects'
       );
@@ -256,7 +262,7 @@ rcube_webmail.prototype.openpgp_get_sender = function()
   if (!address || !address.length) {
     // In the case of a bogus sender name/address, throw an error
     this.openpgp_display_message(
-      this.gettext('signature_invalid_sender', 'rc_openpgpjs'),
+      this.gettext('signature_invalid_sender', 'roundcube_openpgp'),
       'notice',
       'message-objects'
     );
@@ -314,14 +320,14 @@ rcube_webmail.prototype.openpgp_generate_key_pair = function(bits, algorithm)
 
   if ($("#gen_passphrase").val() === "") {
     this.openpgp_display_message(
-      this.gettext("enter_pass", "rc_openpgpjs"),
+      this.gettext("enter_pass", "roundcube_openpgp"),
       'error',
       'generate_key_msg'
     );
     return false;
   } else if ($("#gen_passphrase").val() !== $("#gen_passphrase_verify").val()) {
     this.openpgp_display_message(
-      this.gettext("pass_mismatch", "rc_openpgpjs"),
+      this.gettext("pass_mismatch", "roundcube_openpgp"),
       'error',
       'generate_key_msg'
     );
@@ -336,14 +342,14 @@ rcube_webmail.prototype.openpgp_generate_key_pair = function(bits, algorithm)
         "<pre id=\"generated_public\">" + data.publicKeyArmored  +  "</pre>"
       );
       rcmail.openpgp_display_message(
-        rcmail.gettext("key_generation_completed", "rc_openpgpjs"),
+        rcmail.gettext("key_generation_completed", "roundcube_openpgp"),
         'confirmation',
         'generate_key_msg'
       );
       $("#import_button").removeClass("hidden");
     } else {
       rcmail.openpgp_display_message(
-        rcmail.gettext("key_generation_failed", "rc_openpgpjs"),
+        rcmail.gettext("key_generation_failed", "roundcube_openpgp"),
         'error',
         'generate_key_msg'
       );
@@ -362,7 +368,7 @@ rcube_webmail.prototype.openpgp_set_passphrase = function(id, passphrase)
 {
   if (id === "-1") {
     this.openpgp_display_message(
-      this.gettext("select_key", "rc_openpgpjs"),
+      this.gettext("select_key", "roundcube_openpgp"),
       'error',
       'key_select_msg'
     );
@@ -371,7 +377,7 @@ rcube_webmail.prototype.openpgp_set_passphrase = function(id, passphrase)
 
   if (!keyring.privateKeys.keys[id].decrypt(passphrase)) {
     this.openpgp_display_message(
-      this.gettext("incorrect_pass", "rc_openpgpjs"),
+      this.gettext("incorrect_pass", "roundcube_openpgp"),
       'error',
       'key_select_msg'
     );
@@ -473,7 +479,7 @@ rcube_webmail.prototype.openpgp_before_send = function()
   if (!$("#openpgpjs_encrypt").is(":checked") &&
       !$("#openpgpjs_sign").is(":checked")) {
     if (settings.warn_on_unencrypted) {
-      if (confirm(this.gettext("continue_unencrypted", "rc_openpgpjs"))) {
+      if (confirm(this.gettext("continue_unencrypted", "roundcube_openpgp"))) {
         // remove the public key attachment since we don't sign nor encrypt the message
         this.openpgp_remove_public_key_attachment();
         return true;
@@ -509,7 +515,7 @@ rcube_webmail.prototype.openpgp_before_send = function()
     }
 
     if (!this.openpgp_private_key_count()) {
-      alert(this.gettext("no_keys", "rc_openpgpjs"));
+      alert(this.gettext("no_keys", "roundcube_openpgp"));
       return false;
     }
 
@@ -532,7 +538,7 @@ rcube_webmail.prototype.openpgp_before_send = function()
     }
 
     if (!privateKey.keys[0].decrypt(passobj.passphrase)) {
-      alert(this.gettext("incorrect_pass", "rc_openpgpjs"));
+      alert(this.gettext("incorrect_pass", "roundcube_openpgp"));
     }
   }
 
@@ -678,11 +684,11 @@ rcube_webmail.prototype.openpgp_import_generated_key_pair = function()
   var privateKey = this.openpgp_import_private_key($("#generated_private").html(), $("#gen_passphrase").val());
 
   if (publicKey && privateKey) {
-    rcmail.openpgp_display_message(rcmail.gettext("import_gen", "rc_openpgpjs"),
+    rcmail.openpgp_display_message(rcmail.gettext("import_gen", "roundcube_openpgp"),
                                    'confirmation',
                                    'generate_key_msg');
   } else {
-    rcmail.openpgp_display_message(rcmail.gettext("import_fail", "rc_openpgpjs"),
+    rcmail.openpgp_display_message(rcmail.gettext("import_fail", "roundcube_openpgp"),
                                    'error',
                                    'generate_key_msg');
   }
@@ -710,14 +716,14 @@ rcube_webmail.prototype.openpgp_import_public_key = function(publicKey)
     $("#importPubkeyField").val("");
 
     this.openpgp_display_message(
-      rcmail.gettext("import_completed", "rc_openpgpjs"),
+      rcmail.gettext("import_completed", "roundcube_openpgp"),
       'confirmation',
       'import_public_msg'
     );
     return true;
   } catch (e) {
     this.openpgp_display_message(
-      rcmail.gettext("import_failed", "rc_openpgpjs"),
+      rcmail.gettext("import_failed", "roundcube_openpgp"),
       'error',
       'import_public_msg'
     );
@@ -738,7 +744,7 @@ rcube_webmail.prototype.openpgp_import_private_key = function(key, passphrase)
   var privateKey;
   if (passphrase === "") {
     this.openpgp_display_message(
-      this.gettext("enter_pass", "rc_openpgpjs"),
+      this.gettext("enter_pass", "roundcube_openpgp"),
       'error',
       'import_private_msg'
     );
@@ -749,7 +755,7 @@ rcube_webmail.prototype.openpgp_import_private_key = function(key, passphrase)
     privateKey = openpgp.key.readArmored(key).keys[0];
   } catch (e) {
     this.openpgp_display_message(
-      this.gettext("import_failed", "rc_openpgpjs"),
+      this.gettext("import_failed", "roundcube_openpgp"),
       'error',
       'import_private_msg'
     );
@@ -758,7 +764,7 @@ rcube_webmail.prototype.openpgp_import_private_key = function(key, passphrase)
 
   if (!privateKey) {
     this.openpgp_display_message(
-      this.gettext("import_failed", "rc_openpgpjs"),
+      this.gettext("import_failed", "roundcube_openpgp"),
       'error',
       'import_private_msg'
     );
@@ -767,7 +773,7 @@ rcube_webmail.prototype.openpgp_import_private_key = function(key, passphrase)
 
   if (!privateKey.decrypt(passphrase)) {
     this.openpgp_display_message(
-      this.gettext("incorrect_pass", "rc_openpgpjs"),
+      this.gettext("incorrect_pass", "roundcube_openpgp"),
       'error',
       'import_private_msg'
     );
@@ -784,7 +790,7 @@ rcube_webmail.prototype.openpgp_import_private_key = function(key, passphrase)
   $("#passphrase").val("");
 
   this.openpgp_display_message(
-    this.gettext("import_completed", "rc_openpgpjs"),
+    this.gettext("import_completed", "roundcube_openpgp"),
     'confirmation',
     'import_private_msg'
   );
@@ -831,7 +837,7 @@ rcube_webmail.prototype.openpgp_pks_search_callback = function(response)
   }
 
   if (response.message === "ERR: No keys found") {
-      $("#openpgpjs_search_results tbody").html(rcmail.gettext("search_no_keys", "rc_openpgpjs"));
+      $("#openpgpjs_search_results tbody").html(rcmail.gettext("search_no_keys", "roundcube_openpgp"));
       return false;
   }
 
@@ -842,7 +848,7 @@ rcube_webmail.prototype.openpgp_pks_search_callback = function(response)
     try {
       result = JSON.parse(response.message);
     } catch (e) {
-      $("#openpgpjs_search_results tbody").html(rcmail.gettext("search_no_keys", "rc_openpgpjs"));
+      $("#openpgpjs_search_results tbody").html(rcmail.gettext("search_no_keys", "roundcube_openpgp"));
       return false;
     }
 
@@ -859,7 +865,7 @@ rcube_webmail.prototype.openpgp_pks_search_callback = function(response)
     $("#importPubkeyField").val(k[0]);
 
     if (rcmail.openpgp_import_public_key($("#importPubkeyField").val())) {
-      alert(rcmail.gettext("pubkey_import_success", "rc_openpgpjs"));
+      alert(rcmail.gettext("pubkey_import_success", "roundcube_openpgp"));
     }
   }
 };
@@ -885,7 +891,7 @@ rcube_webmail.prototype.openpgp_select_key = function(id)
 {
   var fingerprint = this.openpgp_get_fingerprint(id, true, false);
   $("#openpgpjs_selected").html(
-    "<strong>" + this.gettext("selected", "rc_openpgpjs") + ":</strong> " +
+    "<strong>" + this.gettext("selected", "roundcube_openpgp") + ":</strong> " +
     $(".clickme#" + fingerprint).html()
   );
   $("#openpgpjs_selected_id").val(id);
@@ -917,8 +923,8 @@ rcube_webmail.prototype.openpgp_update_key_selector = function()
     }
 
     $("#openpgpjs_key_select_list").append(
-      "<div id=\"openpgpjs_selected\"><strong>" + this.gettext("selected", "rc_openpgpjs") + ":</strong>" +
-      "<i>" + this.gettext("none", "rc_openpgpjs") + "</i></div>"
+      "<div id=\"openpgpjs_selected\"><strong>" + this.gettext("selected", "roundcube_openpgp") + ":</strong>" +
+      "<i>" + this.gettext("none", "roundcube_openpgp") + "</i></div>"
     );
   }
 
@@ -1065,8 +1071,8 @@ rcube_webmail.prototype.openpgp_update_key_manager = function()
     fingerprint = this.openpgp_get_fingerprint(i);
     person = this.openpgp_escape_html(keyring.publicKeys.keys[i].getUserIds()[0]);
     length_alg = this.openpgp_get_algorithm(i);
-    status = (keyring.publicKeys.keys[i].verifyPrimaryKey() ? this.gettext("valid", "rc_openpgpjs") : this.gettext("invalid", "rc_openpgpjs"));
-    del = "<a href='#' onclick='if (confirm(\"" + this.gettext('delete_pub', 'rc_openpgpjs') + "\")) { rcmail.openpgp_remove_key(\"" + keyId + "\", false); rcmail.openpgp_update_key_manager(); }'>" + this.gettext('delete', 'rc_openpgpjs') + "</a>";
+    status = (keyring.publicKeys.keys[i].verifyPrimaryKey() ? this.gettext("valid", "roundcube_openpgp") : this.gettext("invalid", "roundcube_openpgp"));
+    del = "<a href='#' onclick='if (confirm(\"" + this.gettext('delete_pub', 'roundcube_openpgp') + "\")) { rcmail.openpgp_remove_key(\"" + keyId + "\", false); rcmail.openpgp_update_key_manager(); }'>" + this.gettext('delete', 'roundcube_openpgp') + "</a>";
     exp = "<a href=\"data:asc," + encodeURIComponent(keyring.publicKeys.keys[i].armor()) + "\" download=\"pubkey_" + "0x" + keyId.toUpperCase().substring(8) + ".asc\">Export</a> ";
     result = "<tr>" +
       "<td>" + keyId      + "</td>" +
@@ -1091,7 +1097,7 @@ rcube_webmail.prototype.openpgp_update_key_manager = function()
       fingerprint = this.openpgp_get_fingerprint(i, true);
       person = this.openpgp_escape_html(keyring.privateKeys.keys[i].getUserIds()[j]);
       length_alg = this.openpgp_get_algorithm(i, true);
-      del = "<a href='#' onclick='if (confirm(\"" + this.gettext('delete_priv', 'rc_openpgpjs') + "\")) { rcmail.openpgp_remove_key(\"" + keyId + "\", true); rcmail.openpgp_update_key_manager(); }'>" + this.gettext('delete', 'rc_openpgpjs') + "</a>";
+      del = "<a href='#' onclick='if (confirm(\"" + this.gettext('delete_priv', 'roundcube_openpgp') + "\")) { rcmail.openpgp_remove_key(\"" + keyId + "\", true); rcmail.openpgp_update_key_manager(); }'>" + this.gettext('delete', 'roundcube_openpgp') + "</a>";
       exp = "<a href=\"data:asc," + encodeURIComponent(keyring.privateKeys.keys[i].armor()) + "\" download=\"privkey_" + "0x" + keyId.toUpperCase().substring(8) + ".asc\">Export</a> ";
       result = "<tr>" +
         "<td>" + keyId      + "</td>" +

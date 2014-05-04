@@ -26,7 +26,7 @@ Features
 Installation
 ------------
 1. Copy plugin to 'plugins' folder
-2. Add 'rc_openpgpjs' to the $config['plugins'] array in your Roundcube config (config/config.inc.php)
+2. Add 'roundcube_openpgp' to the $config['plugins'] array in your Roundcube config (config/config.inc.php)
 
 Key storage
 -----------
@@ -47,7 +47,7 @@ For any bug reports or feature requests please refer to the [tracking system][is
 
 [roundcube]: http://www.roundcube.net/
 [openpgpjs]: https://openpgpjs.org/
-[issues]: https://github.com/lazlolazlolazlo/rc_openpgpjs/issues
+[issues]: https://github.com/lazlolazlolazlo/roundcube_openpgp/issues
 [wrong]: http://tonyarcieri.com/whats-wrong-with-webcrypto
 [why]: http://www.pgpi.org/doc/whypgp/en/
 [draft]: https://tools.ietf.org/html/draft-shaw-openpgp-hkp-00
