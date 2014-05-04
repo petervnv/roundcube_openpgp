@@ -169,9 +169,10 @@ rcube_webmail.prototype.openpgp_message_received = function()
   // message is cleartext signed
   if (cleartext) {
     // verify signature of clear signed message
-    openpgp.verifyClearSignedMessage(publicKey, cleartext, function(err, data) {
+    openpgp.verifyClearSignedMessage(publicKey, message, function(err, data) {     
       // valid signature
       if (data) {
+        if (data.signatures.length > 0) {
         rcmail.openpgp_display_message(
           rcmail.gettext('signature_valid', 'roundcube_openpgp') + ' (' + sender + ')',
           'confirmation',
@@ -179,6 +180,7 @@ rcube_webmail.prototype.openpgp_message_received = function()
         );
         $("#messagebody div.message-part pre").html(rcmail.openpgp_escape_html(message.text));
         return true;
+        }
       }
       // invalid signature
       rcmail.openpgp_display_message(
