@@ -55,18 +55,30 @@ $labels['warn_on_unencrypted'] = 'Warn on sending an unencrypted message';
 // compose
 $labels['continue_unencrypted'] = 'Continue sending unencrypted and unsigned email?';
 $labels['encrypt'] = 'Encrypt';
+$labels['encrypting_failed'] = 'Encrypting message failed';
+$labels['encrypting_message'] = 'Encrypting message';
 $labels['enter_pass'] = 'Please enter passphrase';
+$labels['message_encrypted'] = 'Message encrypted';
+$labels['message_signed'] = 'Message signed';
+$labels['message_signed_and_encrypted'] = 'Message signed and encrypted';
 $labels['no_keys'] = 'Please generate or import keys in the key manager!';
 $labels['save_draft_confirm'] = 'Encryption is enabled, are you sure that you want to save this draft? By doing so you save an unencrypted copy on the server.';
 $labels['sign'] = 'Sign';
+$labels['signing_and_encrypting_failed'] = 'Signing and encrypting message failed';
+$labels['signing_and_encrypting_message'] = 'Signing and encrypting message';
+$labels['signing_failed'] = 'Signing message failed';
+$labels['signing_message'] = 'Signing message';
 
 // passphrase
 $labels['passphrase'] = 'Passphrase';
+$labels['missing_passphrase'] = 'Missing passphrase';
 $labels['remember_this_session'] = 'Remember for this session';
 $labels['select_key'] = 'Please select a key';
 
 // show and preview
 $labels['key_mismatch'] = 'This message was not intended for this private key';
+$labels['message_decrypted'] = 'Message decrypted';
+$labels['decrypting_message'] = 'Decrypting message';
 $labels['no_key_imported'] = 'Detected PGP encrypted content but no imported private keys. Please import your private PGP key using the key manager!';
 $labels['signature_invalid_sender'] = 'Could not verify signature: No valid sender email address recognized';
 $labels['signature_invalid_no_pubkey'] = 'Could not verify signature: No public key found for ';

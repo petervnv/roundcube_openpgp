@@ -48,23 +48,37 @@ $labels['key_select'] = 'Select key';
 // settings
 $labels['always_encrypt'] = 'Zawsze szyfruj wiadomości';
 $labels['always_sign'] = 'Zawsze podpisuj cyfrowo wiadomości';
-$labels['openpgp_options'] = 'Ustawienia i działanie zarządzania kluczami';
+$labels['attach_public_key'] = 'Automatically attach public key';
+$labels['openpgp'] = 'OpenPGP';
+$labels['warn_on_unencrypted'] = 'Warn on sending an unencrypted message';
 
 // compose
 $labels['continue_unencrypted'] = 'Czy kontynuować wysyłanie niepodpisanej i niezaszyfrowanej wiadomości?';
 $labels['encrypt'] = 'Zaszyfruj';
+$labels['encrypting_failed'] = 'Encrypting message failed';
+$labels['encrypting_message'] = 'Encrypting message';
 $labels['enter_pass'] = 'Proszę podać hasło';
+$labels['message_encrypted'] = 'Message encrypted';
+$labels['message_signed'] = 'Message signed';
+$labels['message_signed_and_encrypted'] = 'Message signed and encrypted';
 $labels['no_keys'] = 'Proszę wygenerować lub zaimportować klucze w Zarządzaniu kluczami!';
 $labels['save_draft_confirm'] = 'Szyfrowanie jest włączone, czy na pewno zapisywać szkic wiadomości? Zgadzając się zapisana zostanie niezaszyfrowana wiadomość na serwerze.';
 $labels['sign'] = 'Podpisz (szyfrowanie i podpis cyfrowy działają tylko z wiadomościami bez HTML, zwykły tekst)';
+$labels['signing_and_encrypting_failed'] = 'Signing and encrypting message failed';
+$labels['signing_and_encrypting_message'] = 'Signing and encrypting message';
+$labels['signing_failed'] = 'Signing message failed';
+$labels['signing_message'] = 'Signing message';
 
 // passphrase
 $labels['passphrase'] = 'Hasło';
+$labels['missing_passphrase'] = 'Missing passphrase';
 $labels['remember_this_session'] = 'Zapamiętaj dla tej sesji';
 $labels['select_key'] = 'Wybierz i potwierdź klucz';
 
 // show and preview
 $labels['key_mismatch'] = 'Ta wiadomość nie była przeznaczona dla tego klucza prywatnego';
+$labels['message_decrypted'] = 'Message decrypted';
+$labels['decrypting_message'] = 'Decrypting message';
 $labels['no_key_imported'] = 'Wykryto zaszyfrowaną metodą PHP zawartość ale nie ma zaimportowanych kluczy prywatnych. Proszę zaimportować swój klucz prywatny za pomoca Zarządzania kluczami!';
 $labels['signature_invalid_sender'] = 'Nie mogę sprawdzić podpisu cyfrowego: Nie rozpoznano prawidłowego adresu email';
 $labels['signature_invalid_no_pubkey'] = 'Nie mogłem zweryfikować podpisu cyfrowego: Nie znaleziono publicznego klucza dla ';

@@ -48,23 +48,37 @@ $labels['key_select'] = 'Select key';
 // settings
 $labels['always_encrypt'] = 'Cifra sempre i messaggi';
 $labels['always_sign'] = 'Firma sempre i messaggi';
-$labels['openpgp_options'] = 'Opzioni OpenPGP';
+$labels['attach_public_key'] = 'Automatically attach public key';
+$labels['openpgp'] = 'OpenPGP';
+$labels['warn_on_unencrypted'] = 'Warn on sending an unencrypted message';
 
 // compose
 $labels['continue_unencrypted'] = 'Continuare ad inviare la mail non cifrata e non firmata?';
 $labels['encrypt'] = 'Cifra';
+$labels['encrypting_failed'] = 'Encrypting message failed';
+$labels['encrypting_message'] = 'Encrypting message';
 $labels['enter_pass'] = 'Inserisci la passphrase';
+$labels['message_encrypted'] = 'Message encrypted';
+$labels['message_signed'] = 'Message signed';
+$labels['message_signed_and_encrypted'] = 'Message signed and encrypted';
 $labels['no_keys'] = 'Genera o importa chiavi nel Gestore chiavi!';
 $labels['save_draft_confirm'] = 'Cifratura abilitata, sei sicuro di voler salvare questa bozza? Procedendo salverai sul server una copia non cifrata.';
 $labels['sign'] = 'Firma';
+$labels['signing_and_encrypting_failed'] = 'Signing and encrypting message failed';
+$labels['signing_and_encrypting_message'] = 'Signing and encrypting message';
+$labels['signing_failed'] = 'Signing message failed';
+$labels['signing_message'] = 'Signing message';
 
 // passphrase
 $labels['passphrase'] = 'Passphrase';
+$labels['missing_passphrase'] = 'Missing passphrase';
 $labels['remember_this_session'] = 'Ricorda per questa sessione';
 $labels['select_key'] = 'Seleziona chiave';
 
 // show and preview
 $labels['key_mismatch'] = 'Questo messaggio non è stato creato per questa chiave privata';
+$labels['message_decrypted'] = 'Message decrypted';
+$labels['decrypting_message'] = 'Decrypting message';
 $labels['no_key_imported'] = 'Rilevato contenuto PGP cifrato ma non è stata importata alcuna chiave privata. Importa la tua chiave privata usanda il Gestore chiavi!';
 $labels['signature_invalid_sender'] = 'Impossibile verificare la firma: indirizzo mail del mittente sconosciuto';
 $labels['signature_invalid_no_pubkey'] = 'Impossibile verificare la firma: nessuna chiave pubblica trovata per ';

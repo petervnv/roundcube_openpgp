@@ -48,23 +48,37 @@ $labels['key_select'] = 'Select key';
 // settings
 $labels['always_encrypt'] = 'E-Mails immer verschlüsseln';
 $labels['always_sign'] = 'E-Mails immer signieren';
-$labels['openpgp_options'] = 'OpenPGP-Optionen';
+$labels['attach_public_key'] = 'Automatically attach public key';
+$labels['openpgp'] = 'OpenPGP';
+$labels['warn_on_unencrypted'] = 'Warn on sending an unencrypted message';
 
 // compose
 $labels['continue_unencrypted'] = 'Diese E-Mail wirklich unverschlüsselt und unsigniert versenden?';
 $labels['encrypt'] = 'Verschlüsseln';
+$labels['encrypting_failed'] = 'Encrypting message failed';
+$labels['encrypting_message'] = 'Encrypting message';
 $labels['enter_pass'] = 'Bitte Kennwort eingeben';
+$labels['message_encrypted'] = 'Message encrypted';
+$labels['message_signed'] = 'Message signed';
+$labels['message_signed_and_encrypted'] = 'Message signed and encrypted';
 $labels['no_keys'] = 'Bitte zuerst über die Schlüsselverwaltung Schlüssel importieren oder erzeugen!';
 $labels['save_draft_confirm'] = 'Verschlüselung ist aktiviert. Soll diese E-Mail wirklich als Entwurf gespeichert werden? Hiermit wird eine unverschlüsselte Kopie auf dem Server abgelegt.';
 $labels['sign'] = 'Signieren';
+$labels['signing_and_encrypting_failed'] = 'Signing and encrypting message failed';
+$labels['signing_and_encrypting_message'] = 'Signing and encrypting message';
+$labels['signing_failed'] = 'Signing message failed';
+$labels['signing_message'] = 'Signing message';
 
 // passphrase
 $labels['passphrase'] = 'Kennwort';
+$labels['missing_passphrase'] = 'Missing passphrase';
 $labels['remember_this_session'] = 'Für diese Sitzung speichern';
 $labels['select_key'] = 'Schlüssel auswählen';
 
 // show and preview
 $labels['key_mismatch'] = 'Die Nachricht passt nicht zu diesem privaten Schlüssel.';
+$labels['message_decrypted'] = 'Message decrypted';
+$labels['decrypting_message'] = 'Decrypting message';
 $labels['no_key_imported'] = 'Verschlüsselter Inhalt erkannt, aber kein privater Schlüssel vorhanden, diesen bitte über die Schlüsselverwaltung importieren.';
 $labels['signature_invalid_sender'] = 'Signatur konnte nicht überprüft werden: keine gültige Absenderadresse erkannt.';
 $labels['signature_invalid_no_pubkey'] = 'Signatur konnte nicht überprüft werden: kein öffentlicher Schlüssel gefunden für ';

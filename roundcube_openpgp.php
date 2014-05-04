@@ -364,7 +364,7 @@ class roundcube_openpgp extends rcube_plugin {
 
   /**
    * Writes public key to attachment file, on compose it writes a
-   * dummy which is later replaced by the used public key in.
+   * dummy which is later replaced by the used public key.
    */
   function write_public_key() {
     $rcmail = rcmail::get_instance();

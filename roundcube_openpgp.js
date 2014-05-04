@@ -4,10 +4,10 @@
  * @version @package_version@
  * @author Lazlo Westerhof <hello@lazlo.me>
  * @author Niklas Femerstrand <nik@qnrq.se>
- * 
+ *
  * @licstart  The following is the entire license notice for the
  * JavaScript code in this file.
- * 
+ *
  * Copyright (C) 2013 Niklas Femerstrand <nik@qnrq.se>
  * Copyright (C) 2013-2014, Lazlo Westerhof <hello@lazlo.me>
  *
@@ -23,7 +23,7 @@
  * You should have received a copy of the GNU General Public License along
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- * 
+ *
  * @licend  The above is the entire license notice
  * for the JavaScript code in this file.
  */
@@ -41,7 +41,7 @@ window.rcmail && rcmail.addEventListener('init', function(evt) {
   if (!window.crypto || !window.crypto.getRandomValues) {
     rcmail.display_message(rcmail.gettext("no_window_crypto", "roundcube_openpgp"), "error");
   }
-  
+
   rcmail.passphrase = "";
   rcmail.addEventListener("plugin.pks_search", rcmail.openpgp_pks_search_callback);
 
@@ -90,7 +90,7 @@ window.rcmail && rcmail.addEventListener('init', function(evt) {
   if (rcmail.env.action === "compose") {
     // load openpgp settings
     settings = rcmail.env.openpgp_settings;
-  
+
     rcmail.addEventListener("change_identity", function () {
       sessionStorage.clear();
       rcmail.passphrase = "";
@@ -216,7 +216,7 @@ rcube_webmail.prototype.openpgp_message_received = function()
 
     // decrypt message
     var decrypting = this.display_message(
-      'Decrypting message',
+      this.gettext('decrypting_message', 'roundcube_openpgp'),
       'loading'
     );
     openpgp.decryptAndVerifyMessage(privateKey.keys[0], publicKey, message, function(err, data) {
@@ -231,7 +231,7 @@ rcube_webmail.prototype.openpgp_message_received = function()
         $("#messagebody div.message-part pre").html(rcmail.openpgp_escape_html(data.text));
         rcmail.hide_message(decrypting);
         rcmail.display_message(
-          'Message decrypted',
+          rcmail.gettext('message_decrypted', 'roundcube_openpgp'),
           'confirmation',
           rcmail.message_time
         );
@@ -529,7 +529,7 @@ rcube_webmail.prototype.openpgp_before_send = function()
 
     if (!passobj.passphrase) {
       this.display_message(
-        'Missing passphrase',
+        this.gettext("missing_passphrase", "roundcube_openpgp"),
         'error'
       );
       return false;
@@ -561,7 +561,7 @@ rcube_webmail.prototype.openpgp_before_send = function()
     // sign and encrypt message
     if ($("#openpgpjs_sign").is(":checked")) {
       var encryptingAndSigning = this.display_message(
-        'Signing and encrypting message',
+        this.gettext('signing_and_encrypting_message', 'roundcube_openpgp'),
         'loading'
       );
       openpgp.signAndEncryptMessage(publicKeys, privateKey.keys[0], plaintext, function(err, data) {
@@ -569,14 +569,14 @@ rcube_webmail.prototype.openpgp_before_send = function()
         if (data) {
           rcmail.openpgp_replace_plaintext(data);
           rcmail.display_message(
-            'Message signed and encrypted',
+            rcmail.gettext('message_signed_and_encrypted', 'roundcube_openpgp'),
             'confirmation',
             rcmail.message_time
           );
           return true;
         }
         rcmail.display_message(
-          'Signing and encrypting message failed',
+          rcmail.gettext('signing_and_encrypting_failed', 'roundcube_openpgp'),
           'error'
         );
         return false;
@@ -585,7 +585,7 @@ rcube_webmail.prototype.openpgp_before_send = function()
     // encrypt message
     else {
       var encrypting = this.display_message(
-        'Encrypting message',
+        this.gettext('encrypting_message', 'roundcube_openpgp'),
         'loading'
       );
       openpgp.encryptMessage(publicKeys, plaintext, function(err, data) {
@@ -593,14 +593,14 @@ rcube_webmail.prototype.openpgp_before_send = function()
         if (data) {
           rcmail.openpgp_replace_plaintext(data);
           rcmail.display_message(
-            'Message encrypted',
+            rcmail.gettext('message_encrypted', 'roundcube_openpgp'),
             'confirmation',
             rcmail.message_time
           );
           return true;
         }
         rcmail.display_message(
-          'Encrypting message failed',
+          rcmail.gettext('encrypting_failed', 'roundcube_openpgp'),
           'error'
         );
         return false;
@@ -610,7 +610,7 @@ rcube_webmail.prototype.openpgp_before_send = function()
   // sign message
   else if ($("#openpgpjs_sign").is(":checked")) {
     var signing = this.display_message(
-      'Signing message',
+      this.gettext('signing_message', 'roundcube_openpgp'),
       'loading'
     );
     openpgp.signClearMessage(privateKey.keys, plaintext, function(err, data) {
@@ -618,14 +618,14 @@ rcube_webmail.prototype.openpgp_before_send = function()
       if (data) {
         rcmail.openpgp_replace_plaintext(data);
         rcmail.display_message(
-          'Message signed',
+          rcmail.gettext('message_signed', 'roundcube_openpgp'),
           'confirmation',
           rcmail.message_time
         );
         return true;
       }
       rcmail.display_message(
-        'Signing message failed',
+        rcmail.gettext('signing_failed', 'roundcube_openpgp'),
         'error'
       );
       return false;
@@ -682,13 +682,17 @@ rcube_webmail.prototype.openpgp_import_generated_key_pair = function()
   var privateKey = this.openpgp_import_private_key($("#generated_private").html(), $("#gen_passphrase").val());
 
   if (publicKey && privateKey) {
-    rcmail.openpgp_display_message(rcmail.gettext("import_gen", "roundcube_openpgp"),
-                                   'confirmation',
-                                   'generate_key_msg');
+    rcmail.openpgp_display_message(
+      rcmail.gettext("import_gen", "roundcube_openpgp"),
+      'confirmation',
+      'generate_key_msg'
+    );
   } else {
-    rcmail.openpgp_display_message(rcmail.gettext("import_fail", "roundcube_openpgp"),
-                                   'error',
-                                   'generate_key_msg');
+    rcmail.openpgp_display_message(
+      rcmail.gettext("import_fail", "roundcube_openpgp"),
+      'error',
+      'generate_key_msg'
+    );
   }
 
   $("#gen_passphrase").val("");
