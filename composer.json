@@ -1,5 +1,5 @@
 {
-    "name": "roundcube_openpgp",
+    "name": "roundcube/openpgp",
     "type": "roundcube-plugin",
     "description": "Roundcube plugin adding OpenPGP support using OpenPGPOpenPGP.js",
     "license": "GNU GPLv2",
