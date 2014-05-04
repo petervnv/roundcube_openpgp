@@ -169,7 +169,7 @@ rcube_webmail.prototype.openpgp_message_received = function()
   // message is cleartext signed
   if (cleartext) {
     // verify signature of clear signed message
-    openpgp.verifyClearSignedMessage(publicKey, message, function(err, data) {     
+    openpgp.verifyClearSignedMessage(publicKey, message, function(err, data) {
       // valid signature
       if (data) {
         if (data.signatures.length > 0) {
@@ -277,29 +277,33 @@ rcube_webmail.prototype.openpgp_get_sender = function()
 /**
  * Extracts public key info from parsed OpenPGP message.
  *
- * @param string Parsed OpenPGP message
+ * @param message {String} Parsed OpenPGP message
  */
-//TODO: broken
-rcube_webmail.prototype.openpgp_display_key_info = function(msg)
+rcube_webmail.prototype.openpgp_display_key_info = function(message)
 {
+  // get fingerprint from sender's public key
   try {
     var sender = this.env.sender.match(/[a-zA-Z0-9\._%+-]+@[a-zA-Z0-9\._%+-]+\.[a-zA-Z]{2,4}/g)[0],
       publicKey = keyring.publicKeys.getForAddress(sender),
-      fingerprint = openpgp.util.hexstrdump(publicKey.primaryKey.getFingerprint()).toUpperCase().substring(8).replace(/(.{2})/g,"$1 ");
+      fingerprint = publicKey[0].primaryKey.getFingerprint().toUpperCase().substring(8).replace(/(.{4})/g,"$1 ");
   } catch (e) {
     return false;
   }
 
   if (typeof(this.getinfo) === "undefined") {
-    $(".headers-table").css( "float", "left" );
-    $(".headers-table").after("<div id=\"openpgpjs_info\"><table><tbody></tbody></table></div>");
+    $(".headers-table").css( "float", "left" ).after("<table class='openpgpjs_info headers-table'><tbody></tbody></table>");
 
     // Carefully escape anything that is appended to the info table, otherwise
     // anyone clever enough to write arbitrary data to their pubkey has a clear
     // exploitation path.
-    $("#openpgpjs_info table tbody").append("<tr><td>Key algo:</td><td>" + this.openpgp_type_to_string(msg[0].type) + "</td></tr>");
-    $("#openpgpjs_info table tbody").append("<tr><td>Created:</td><td>" + this.openpgp_escape_html(String(msg[0].messagePacket.creationTime))  + "</td></tr>");
-    $("#openpgpjs_info table tbody").append("<tr><td>Fingerprint:</td><td>" + fingerprint + "</td></tr>");
+    $(".openpgpjs_info tbody").append(
+      "<tr><td class='header-title'>"+this.gettext("algorithm", "roundcube_openpgp") +":</td>" +
+      "<td class='header'>" + this.openpgp_type_to_string(message.packets[0].publicKeyAlgorithm) + "</td></tr>" +
+      "<tr><td class='header-title'>Created:</td>" +
+      "<td class='header'>" + this.openpgp_escape_html(String(message.packets[0].created))  + "</td></tr>" +
+      "<tr><td class='header-title'>"+this.gettext("fingerprint", "roundcube_openpgp") +":</td>" +
+      "<td class='header'>" + fingerprint + "</td></tr>"
+    );
     this.getinfo = false;
   }
 };
@@ -403,6 +407,7 @@ rcube_webmail.prototype.openpgp_set_passphrase = function(id, passphrase)
     this.command("send", this);
   }
 };
+
 
 rcube_webmail.prototype.openpgp_recipient_public_keys = function()
 {
@@ -944,17 +949,28 @@ rcube_webmail.prototype.openpgp_update_key_selector = function()
  */
 rcube_webmail.prototype.openpgp_type_to_string = function(type)
 {
+  if(isNaN(type)) {
+    type = openpgp.enums.publicKey[type];
+    console.log(type);
+  }
+
   switch(type) {
-    case "rsa_encrypt_sign":
-      return "RSA(E/S)";
-    case "rsa_encrypt":
-      return "RSA(E)";
-    case "rsa_sign":
-      return "RSA(S)";
-    case "elgamal":
+    // rsa_encrypt_sign
+    case 1:
+      return "RSA (encrypt/sign)";
+    // rsa_encrypt
+    case 2:
+      return "RSA (encrypt)";
+    // rsa_sign
+    case 3:
+      return "RSA (sign)";
+    // elgamal
+    case 16:
       return "Elgamal";
-    case "dsa":
+    // dsa
+    case 17:
       return "DSA";
+    // unknown
     default:
       return "Unknown";
   }
@@ -975,7 +991,6 @@ rcube_webmail.prototype.openpgp_get_algorithm = function(id, private=false)
   } else {
     key = keyring.publicKeys.keys[id].primaryKey;
   }
-
   return key.mpi[0].byteLength() * 8 + "/" + this.openpgp_type_to_string(key.algorithm);
 };
 
@@ -992,13 +1007,13 @@ rcube_webmail.prototype.openpgp_get_fingerprint = function(id, private=false, ni
 {
   var fingerprint;
   if (private) {
-    fingerprint = openpgp.util.hexstrdump(keyring.privateKeys.keys[id].primaryKey.getFingerprint()).toUpperCase();
+    fingerprint = keyring.privateKeys.keys[id].primaryKey.getFingerprint().toUpperCase();
   } else {
-    fingerprint = openpgp.util.hexstrdump(keyring.publicKeys.keys[id].primaryKey.getFingerprint()).toUpperCase();
+    fingerprint = keyring.publicKeys.keys[id].primaryKey.getFingerprint().toUpperCase();
   }
 
   if (niceformat) {
-    fingerprint = fingerprint.replace(/(.{2})/g, "$1 ");
+    fingerprint = fingerprint.replace(/(.{4})/g, "$1 ");
   } else {
     fingerprint = "0x" + fingerprint.substring(0, 8);
   }
