@@ -1,27 +1,27 @@
 <div id='openpgpjs_key_manager' class='propform popupdialog'>
   <div id='openpgpjs_tabs'>
     <ul>
-      <li><a href='#openpgpjs-tab1'><roundcube:label name="rc_openpgpjs.public_keys" /></a></li>
-      <li><a href='#openpgpjs-tab2'><roundcube:label name="rc_openpgpjs.private_keys" /></a></li>
-      <li><a href='#openpgpjs-tab3'><roundcube:label name="rc_openpgpjs.generate_keys" /></a></li>
-      <li><a href='#openpgpjs-tab4'><roundcube:label name="rc_openpgpjs.key_search" /></a></li>
+      <li><a href='#openpgpjs-tab1'><roundcube:label name="roundcube_openpgp.public_keys" /></a></li>
+      <li><a href='#openpgpjs-tab2'><roundcube:label name="roundcube_openpgp.private_keys" /></a></li>
+      <li><a href='#openpgpjs-tab3'><roundcube:label name="roundcube_openpgp.generate_keys" /></a></li>
+      <li><a href='#openpgpjs-tab4'><roundcube:label name="roundcube_openpgp.key_search" /></a></li>
     </ul>
     <div id='openpgpjs-tab1'>
       <table id='openpgpjs_pubkeys' class='records-table'>
         <thead>
           <tr class='boxtitle'>
-            <td><roundcube:label name="rc_openpgpjs.key_id" /></td>
-            <td><roundcube:label name="rc_openpgpjs.fingerprint" /></td>
-            <td><roundcube:label name="rc_openpgpjs.person" /></td>
-            <td><roundcube:label name="rc_openpgpjs.length_alg" /></td>
-            <td><roundcube:label name="rc_openpgpjs.status" /></td>
-            <td><roundcube:label name="rc_openpgpjs.action" /></td>
+            <td><roundcube:label name="roundcube_openpgp.key_id" /></td>
+            <td><roundcube:label name="roundcube_openpgp.fingerprint" /></td>
+            <td><roundcube:label name="roundcube_openpgp.person" /></td>
+            <td><roundcube:label name="roundcube_openpgp.length_alg" /></td>
+            <td><roundcube:label name="roundcube_openpgp.status" /></td>
+            <td><roundcube:label name="roundcube_openpgp.action" /></td>
           </tr>
         </thead>
         <tbody></tbody>
       </table>
       <fieldset id='openpgpjs_import'>
-        <h3><roundcube:label name="rc_openpgpjs.import_public" /></h3>
+        <h3><roundcube:label name="roundcube_openpgp.import_public" /></h3>
         <div id='import_public_msg'class='manager-objects'></div>
         <textarea id='importPubkeyField'></textarea>
         <div class='formbuttons'>
@@ -33,57 +33,57 @@
       <table id='openpgpjs_privkeys' class='records-table'>
         <thead>
           <tr class='boxtitle'>
-            <td><roundcube:label name="rc_openpgpjs.key_id" /></td>
-            <td><roundcube:label name="rc_openpgpjs.fingerprint" /></td>
-            <td><roundcube:label name="rc_openpgpjs.person" /></td>
-            <td><roundcube:label name="rc_openpgpjs.length_alg" /></td>
-            <td><roundcube:label name="rc_openpgpjs.action" /></td>
+            <td><roundcube:label name="roundcube_openpgp.key_id" /></td>
+            <td><roundcube:label name="roundcube_openpgp.fingerprint" /></td>
+            <td><roundcube:label name="roundcube_openpgp.person" /></td>
+            <td><roundcube:label name="roundcube_openpgp.length_alg" /></td>
+            <td><roundcube:label name="roundcube_openpgp.action" /></td>
           </tr>
         </thead>
         <tbody></tbody>
       </table>
-      <h3><roundcube:label name="rc_openpgpjs.import_private" /></h3>
+      <h3><roundcube:label name="roundcube_openpgp.import_private" /></h3>
       <fieldset id='openpgpjs_import'>
         <div id='import_private_msg'class='manager-objects'></div>
         <textarea id='importPrivkeyField'></textarea><br /><br />
-        <label for='import_passphrase'><roundcube:label name="rc_openpgpjs.passphrase" />:</label> <input type='password' id='import_passphrase' />
+        <label for='import_passphrase'><roundcube:label name="roundcube_openpgp.passphrase" />:</label> <input type='password' id='import_passphrase' />
         <div class='formbuttons'>
-          <input type='button' class='button mainaction' value='<roundcube:label name="rc_openpgpjs.import" />' onclick='rcmail.openpgp_import_private_key($("#importPrivkeyField").val(), $("#import_passphrase").val());' /></p>
+          <input type='button' class='button mainaction' value='<roundcube:label name="roundcube_openpgp.import" />' onclick='rcmail.openpgp_import_private_key($("#importPrivkeyField").val(), $("#import_passphrase").val());' /></p>
         </div>
       </fieldset>
     </div>
     <div id='openpgpjs-tab3'>
       <fieldset>
         <div id='generate_key_msg'class='manager-objects'></div>
-        <label for='gen_ident'><roundcube:label name="rc_openpgpjs.ident" />:</label> <select id='gen_ident' /></select>
-        <label for='gen_passphrase'><roundcube:label name="rc_openpgpjs.passphrase" />:</label> <input type='password' id='gen_passphrase' />
-        <label for='gen_passphrase_verify'><roundcube:label name="rc_openpgpjs.verify" />:</label> <input type='password' id='gen_passphrase_verify' />
-        <label for='algorithm'><roundcube:label name="rc_openpgpjs.algorithm" />:</label>
+        <label for='gen_ident'><roundcube:label name="roundcube_openpgp.ident" />:</label> <select id='gen_ident' /></select>
+        <label for='gen_passphrase'><roundcube:label name="roundcube_openpgp.passphrase" />:</label> <input type='password' id='gen_passphrase' />
+        <label for='gen_passphrase_verify'><roundcube:label name="roundcube_openpgp.verify" />:</label> <input type='password' id='gen_passphrase_verify' />
+        <label for='algorithm'><roundcube:label name="roundcube_openpgp.algorithm" />:</label>
         <select id='algorithm'>
           <option value='1'>RSA</option>
         </select>
-        <label for='bits'><roundcube:label name="rc_openpgpjs.bits" />:</label>
+        <label for='bits'><roundcube:label name="roundcube_openpgp.bits" />:</label>
         <select id='bits'>
           <option value='2048' selected>2048</option>
           <option value='4096'>4096</option>
         </select>
         <div class='formbuttons'>
-          <input type='button' class='button mainaction' value='<roundcube:label name="rc_openpgpjs.generate" />' onclick='rcmail.openpgp_generate_key_pair($("#bits").val(), $("#algorithm").val());' />
-          <input type='button' class='button mainaction hidden' id='import_button' value='<roundcube:label name="rc_openpgpjs.import" />' onclick='rcmail.openpgp_import_generated_key_pair();' />
+          <input type='button' class='button mainaction' value='<roundcube:label name="roundcube_openpgp.generate" />' onclick='rcmail.openpgp_generate_key_pair($("#bits").val(), $("#algorithm").val());' />
+          <input type='button' class='button mainaction hidden' id='import_button' value='<roundcube:label name="roundcube_openpgp.import" />' onclick='rcmail.openpgp_import_generated_key_pair();' />
         </div>
         <div id='generated_keys'></div>
     </div>
     <div id='openpgpjs-tab4'>
       <div>
-        <roundcube:label name="rc_openpgpjs.search_description" /><br />
+        <roundcube:label name="roundcube_openpgp.search_description" /><br />
         <roundcube:label name="email" />: <input type='text' id='openpgpjs_search_input' /> <input type='submit' value='<roundcube:label name="search" />' id='openpgpjs_search_submit' onclick='rcmail.http_post("plugin.pks_search", "search=" + $("#openpgpjs_search_input").val() + "&op=index"); $("#openpgpjs_search_input").attr("disabled", "disabled"); $(this).attr("disabled", "disabled");' />
       </div><br />
       <table id='openpgpjs_search_results' class='records-table'>
         <thead>
           <tr class='boxtitle'>
-            <td><roundcube:label name="rc_openpgpjs.key_id" /></td>
-            <td><roundcube:label name="rc_openpgpjs.person" /></td>
-            <td><roundcube:label name="rc_openpgpjs.action" /></td>
+            <td><roundcube:label name="roundcube_openpgp.key_id" /></td>
+            <td><roundcube:label name="roundcube_openpgp.person" /></td>
+            <td><roundcube:label name="roundcube_openpgp.action" /></td>
           </tr>
         </thead>
         <tbody></tbody>
