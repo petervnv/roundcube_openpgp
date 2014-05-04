@@ -228,7 +228,7 @@ rcube_webmail.prototype.openpgp_message_received = function()
             'message-objects'
           );
         }
-        $("#messagebody div.message-part pre").html(this.openpgp_escape_html(data.text));
+        $("#messagebody div.message-part pre").html(rcmail.openpgp_escape_html(data.text));
         rcmail.hide_message(decrypting);
         rcmail.display_message(
           'Message decrypted',
