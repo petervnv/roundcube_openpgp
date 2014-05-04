@@ -951,7 +951,6 @@ rcube_webmail.prototype.openpgp_type_to_string = function(type)
 {
   if(isNaN(type)) {
     type = openpgp.enums.publicKey[type];
-    console.log(type);
   }
 
   switch(type) {
