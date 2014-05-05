@@ -172,7 +172,10 @@ class roundcube_openpgp extends rcube_plugin {
   function hkp_search() {
     $server = $this->rc->config->get('sks_key_server', false);
     $port = $this->rc->config->get('sks_key_port', false);
-    if ($server || $port) {
+    
+    $hkps = $this->rc->config->get('use_hkps', false);    
+    $cert = $this->rc->config->get('hkps_cert', false);
+    if ($server && $port) {
       $op = "";
       $search = "";
 
@@ -198,12 +201,17 @@ class roundcube_openpgp extends rcube_plugin {
       }
 
       if ($op == "index") {
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_URL, "{$server}:{$port}/pks/lookup?op=index&search={$search}");
-        $result = curl_exec($ch);
-        $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        if ($hkps && $cert) {
+          curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, true);
+          curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 2);
+          curl_setopt($curl, CURLOPT_CAINFO, getCwd() . "/plugins/roundcube_openpgp/certs/{$cert}");
+        }
+        curl_setopt($curl, CURLOPT_URL, "{$server}:{$port}/pks/lookup?op=index&search={$search}");
+        $result = curl_exec($curl);
+        $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        curl_close($curl);
 
         if ($status == 200) {
           // TODO Fix search regex to match 32/64-bit str
@@ -211,8 +219,9 @@ class roundcube_openpgp extends rcube_plugin {
 
           if (count($m[0]) > 0) {
             $found = array();
-            for($i = 0; $i < count($m[0]); $i++)
+            for($i = 0; $i < count($m[0]); $i++) {
               $found[] = array($m[1][$i], $m[2][$i]);
+            }
             return $this->rc->output->command(
               'plugin.pks_search',
               array(
@@ -245,12 +254,17 @@ class roundcube_openpgp extends rcube_plugin {
             ));
         }
 
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_URL, "{$server}:{$port}/pks/lookup?op=get&search={$search}");
-        $result = curl_exec($ch);
-        $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        if ($hkps || $cert) {
+          curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, true);
+          curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 2);
+          curl_setopt($curl, CURLOPT_CAINFO, getCwd() . "/plugins/roundcube_openpgp/certs/{$cert}");
+        }
+        curl_setopt($curl, CURLOPT_URL, "{$server}:{$port}/pks/lookup?op=get&search={$search}");
+        $result = curl_exec($curl);
+        $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        curl_close($curl);
 
         if ($status == 200) {
           preg_match_all("/-----BEGIN PGP PUBLIC KEY BLOCK-----(.*)-----END PGP PUBLIC KEY BLOCK-----/s", $result, $m);
@@ -357,6 +371,27 @@ class roundcube_openpgp extends rcube_plugin {
         'content' => $sks_key_port->show(),
       );
     }
+
+    // use HKPS key server
+    if (!isset($no_override['use_hkps'])) {
+      $field_id = 'rcmfd_use_hkps';
+      $use_hkps = new html_checkbox(array('name' => '_use_hkps', 'id' => $field_id, 'value' => 1));
+      $p['blocks']['sks']['options']['use_hkps'] = array(
+        'title' => html::label($field_id, Q($this->gettext('use_hkps'))),
+        'content' => $use_hkps->show($this->rc->config->get('use_hkps', true)?1:0),
+      );
+    }
+    
+    // set sks key server certificate for HKPS
+    if (!isset($no_override['hkps_cert'])) {
+      $field_id = 'rcmfd_hkps_cert';
+      $hkps_cert = new html_inputfield(array('name' => '_hkps_cert', 'id' => $field_id, 'value' => $this->rc->config->get('hkps_cert')));
+      $p['blocks']['sks']['options']['hkps_cert'] = array(
+        'title' => html::label($field_id, Q($this->gettext('hkps_cert'))),
+        'content' => $hkps_cert->show(),
+      );
+    }
+    
     return $p;
   }
 
@@ -376,6 +411,8 @@ class roundcube_openpgp extends rcube_plugin {
         'warn_on_unencrypted' => get_input_value('_warn_on_unencrypted', RCUBE_INPUT_POST) ? true : false,
         'sks_key_server'      => trim(get_input_value('_sks_key_server', RCUBE_INPUT_POST)),
         'sks_key_port'        => trim(get_input_value('_sks_key_port', RCUBE_INPUT_POST)),
+        'use_hkps'            => get_input_value('_use_hkps', RCUBE_INPUT_POST) ? true : false,
+        'hkps_cert'           => trim(get_input_value('_hkps_cert', RCUBE_INPUT_POST)),        
       );
     }
 

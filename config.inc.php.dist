@@ -35,7 +35,13 @@ $config['attach_public_key'] = true;
 $config['warn_on_unencrypted'] = true;
 
 // set sks key server for key search
-$config['sks_key_server'] = 'http://pool.sks-keyservers.net';
+$config['sks_key_server'] = 'https://hkps.pool.sks-keyservers.net';
 
 // set sks key server port for key search
-$config['sks_key_port'] = '11371';
+$config['sks_key_port'] = '443';
+
+// use HKPS key server
+$config['use_hkps'] = true;
+
+// set sks key server certificate for HKPS
+$config['hkps_cert'] = 'sks-keyservers.netCA.pem';
