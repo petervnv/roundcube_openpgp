@@ -137,7 +137,6 @@ class roundcube_openpgp extends rcube_plugin {
     $template_path = $this->home . '/'. $this->local_skin_path();
     $this->rc->output->add_footer($this->rc->output->just_parse(
       file_get_contents($template_path . '/templates/key_manager.html') .
-      file_get_contents($template_path . '/templates/key_search.html') .
       file_get_contents($template_path . '/templates/key_select.html'))
     );
     $this->rc->output->add_footer(
@@ -171,8 +170,9 @@ class roundcube_openpgp extends rcube_plugin {
    *    Please use http://pool.sks-keyservers.net as the source for this proxy
    */
   function hkp_search() {
-    if ($this->rc->config->get('sks_key_pool', false)) {
-      $pool = $this->rc->config->get('sks_key_pool');
+    $server = $this->rc->config->get('sks_key_server', false);
+    $port = $this->rc->config->get('sks_key_port', false);
+    if ($server || $port) {
       $op = "";
       $search = "";
 
@@ -200,7 +200,7 @@ class roundcube_openpgp extends rcube_plugin {
       if ($op == "index") {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_URL, $pool . ":11371/pks/lookup?op=index&search={$search}");
+        curl_setopt($ch, CURLOPT_URL, "{$server}:{$port}/pks/lookup?op=index&search={$search}");
         $result = curl_exec($ch);
         $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
@@ -247,7 +247,7 @@ class roundcube_openpgp extends rcube_plugin {
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_URL, $pool . ":11371/pks/lookup?op=get&search={$search}");
+        curl_setopt($ch, CURLOPT_URL, "{$server}:{$port}/pks/lookup?op=get&search={$search}");
         $result = curl_exec($ch);
         $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
@@ -336,13 +336,25 @@ class roundcube_openpgp extends rcube_plugin {
       );
     }
 
-    // set sks keyserver pool for key search
-    if (!isset($no_override['sks_key_pool'])) {
-      $field_id = 'rcmfd_sks_key_pool';
-      $sks_key_pool = new html_inputfield(array('name' => '_sks_key_pool', 'id' => $field_id, 'value' => $this->rc->config->get('sks_key_pool')));
-      $p['blocks']['openpgp']['options']['sks_key_pool'] = array(
-        'title' => html::label($field_id, Q($this->gettext('sks_key_pool'))),
-        'content' => $sks_key_pool->show(),
+    $p['blocks']['sks']['name'] = $this->gettext('key_search');
+
+    // set sks key server for key search
+    if (!isset($no_override['sks_key_server'])) {
+      $field_id = 'rcmfd_sks_key_server';
+      $sks_key_server = new html_inputfield(array('name' => '_sks_key_server', 'id' => $field_id, 'value' => $this->rc->config->get('sks_key_server')));
+      $p['blocks']['sks']['options']['sks_key_server'] = array(
+        'title' => html::label($field_id, Q($this->gettext('sks_key_server'))),
+        'content' => $sks_key_server->show(),
+      );
+    }
+
+    // set sks key server port for key search
+    if (!isset($no_override['sks_key_port'])) {
+      $field_id = 'rcmfd_sks_key_port';
+      $sks_key_port = new html_inputfield(array('name' => '_sks_key_port', 'id' => $field_id, 'value' => $this->rc->config->get('sks_key_port')));
+      $p['blocks']['sks']['options']['sks_key_port'] = array(
+        'title' => html::label($field_id, Q($this->gettext('sks_key_port'))),
+        'content' => $sks_key_port->show(),
       );
     }
     return $p;
@@ -362,7 +374,8 @@ class roundcube_openpgp extends rcube_plugin {
         'sign'                => get_input_value('_sign', RCUBE_INPUT_POST) ? true : false,
         'attach_public_key'   => get_input_value('_attach_public_key', RCUBE_INPUT_POST) ? true : false,
         'warn_on_unencrypted' => get_input_value('_warn_on_unencrypted', RCUBE_INPUT_POST) ? true : false,
-        'sks_key_pool'        => trim(get_input_value('_sks_key_pool', RCUBE_INPUT_POST)),
+        'sks_key_server'      => trim(get_input_value('_sks_key_server', RCUBE_INPUT_POST)),
+        'sks_key_port'        => trim(get_input_value('_sks_key_port', RCUBE_INPUT_POST)),
       );
     }
 
