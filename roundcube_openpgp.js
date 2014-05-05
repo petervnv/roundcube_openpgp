@@ -54,7 +54,7 @@ window.rcmail && rcmail.addEventListener('init', function(evt) {
     modal: true,
     autoOpen: false,
     title: rcmail.gettext("key_select", "roundcube_openpgp"),
-    width: "600px",
+    width: "700px",
     open: function () {
       rcmail.openpgp_update_key_selector();
     },
@@ -898,10 +898,8 @@ rcube_webmail.prototype.openpgp_private_key_count = function()
  */
 rcube_webmail.prototype.openpgp_select_key = function(id)
 {
-  var fingerprint = this.openpgp_get_fingerprint(id, true, false);
-  $("#openpgpjs_selected").html(
-    "<strong>" + this.gettext("selected", "roundcube_openpgp") + ":</strong> " +
-    $(".clickme#" + fingerprint).html()
+  $("#openpgpjs_selected i").html(
+    $("#key_" + id).html()
   );
   $("#openpgpjs_selected_id").val(id);
   $("#passphrase").val("");
@@ -913,28 +911,28 @@ rcube_webmail.prototype.openpgp_select_key = function(id)
  */
 rcube_webmail.prototype.openpgp_update_key_selector = function()
 {
-  // only one key in keyring, nothing to select from
-  if (this.openpgp_private_key_count() === 1) {
-    $("#openpgpjs_selected_id").val(0);
-  } else {
-    $("#openpgpjs_selected_id").val(-1);
-    // selected set as $("#openpgpjs_selected_id").val(), then get that value from this.openpgp_set_passphrase
-    for (var i = 0; i < this.openpgp_private_key_count(); i++) {
-      for (var j = 0; j < keyring.privateKeys.keys[i].getUserIds().length; j++) {
-        var fingerprint = this.openpgp_get_fingerprint(i, true, false),
-          person = this.openpgp_escape_html(keyring.privateKeys.keys[i].getUserIds()[j]);
-          $("#openpgpjs_key_select_list").append(
-            "<div class=\"clickme\" id=\"" + fingerprint +"\"onclick=\"rcmail.openpgp_select_key(" + i + ");\">" +
-            fingerprint + " " + person +
-            "</div>"
-          );
-      }
-    }
+  var privateKeys = this.openpgp_private_key_count();
 
-    $("#openpgpjs_key_select_list").append(
-      "<div id=\"openpgpjs_selected\"><strong>" + this.gettext("selected", "roundcube_openpgp") + ":</strong>" +
-      "<i>" + this.gettext("none", "roundcube_openpgp") + "</i></div>"
-    );
+  // empty key selection list
+  $("#openpgpjs_key_select_list tbody").html("");
+  // selected set as $("#openpgpjs_selected_id").val(), then get that value from this.openpgp_set_passphrase
+  for (var i = 0; i < privateKeys; i++) {
+    var userIds = keyring.privateKeys.keys[i].getUserIds()
+    for (var j = 0; j < userIds.length; j++) {
+      $("#openpgpjs_key_select_list tbody").append(
+        "<tr class=\"clickme\" id=\"key_" + i +"\"onclick=\"rcmail.openpgp_select_key(" + i + ");\">" +
+        "<td>" + this.openpgp_get_fingerprint(i, true) + "</td>" +
+        "<td>" + this.openpgp_escape_html(userIds[j]) + "</td>" +
+        "</tr>"
+      );
+    }
+  }
+
+  // only one key in keyring, nothing to select from
+  if (privateKeys === 1) {
+    $("#openpgpjs_key_select_list").addClass('hidden');
+    $("#openpgpjs_selected_id").val(0);
+    this.openpgp_select_key(0);
   }
 
   return true;
@@ -1011,11 +1009,7 @@ rcube_webmail.prototype.openpgp_get_fingerprint = function(id, private=false, ni
     fingerprint = keyring.publicKeys.keys[id].primaryKey.getFingerprint().toUpperCase();
   }
 
-  if (niceformat) {
-    fingerprint = fingerprint.replace(/(.{4})/g, "$1 ");
-  } else {
-    fingerprint = "0x" + fingerprint.substring(0, 8);
-  }
+  fingerprint = fingerprint.replace(/(.{4})/g, "$1 ");
 
   return fingerprint;
 };

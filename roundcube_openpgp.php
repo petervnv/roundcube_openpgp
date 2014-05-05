@@ -63,12 +63,14 @@ class roundcube_openpgp extends rcube_plugin {
       }
       if ($this->api->output->type == 'html') {
         // add key manager item to message menu
-        $opts = array("command"    => "open-key-manager",
-                      "label"      => "roundcube_openpgp.key_manager",
-                      "type"       => "link",
-                      "classact"   => "icon active",
-                      "class"      => "icon",
-                      "innerclass" => "icon key_manager");
+        $opts = array(
+          "command"    => "open-key-manager",
+          "label"      => "roundcube_openpgp.key_manager",
+          "type"       => "link",
+          "classact"   => "icon active",
+          "class"      => "icon",
+          "innerclass" => "icon key_manager"
+        );
         $this->api->add_content(html::tag('li', null, $this->api->output->button($opts)), "messagemenu");
 
         if ($this->rc->action == 'compose') {
@@ -78,17 +80,21 @@ class roundcube_openpgp extends rcube_plugin {
           $this->rc->output->set_env('openpgp_settings', $settings);
 
           // add key manager button to compose toolbar
-          $opts = array("command"    => "open-key-manager",
-                        "label"      => "roundcube_openpgp.key_manager",
-                        "type"       => "link",
-                        "classact"   => "button active key_manager",
-                        "class"      => "button key_manager");
+          $opts = array(
+            "command"  => "open-key-manager",
+            "label"    => "roundcube_openpgp.key_manager",
+            "type"     => "link",
+            "classact" => "button active key_manager",
+            "class"    => "button key_manager"
+          );
           $this->api->add_content($this->api->output->button($opts), "toolbar");
 
           // add encrypt and sign checkboxes to composeoptions
-          $encrypt_opts = array('id' => 'openpgpjs_encrypt',
-                                'type' => 'checkbox');
-          if($this->rc->config->get('encrypt', false)) {
+          $encrypt_opts = array(
+            'id' => 'openpgpjs_encrypt',
+            'type' => 'checkbox'
+          );
+          if($this->rc->config->get('encrypt', true)) {
              $encrypt_opts['checked'] = 'checked';
           }
           $encrypt = new html_inputfield($encrypt_opts);
@@ -96,9 +102,11 @@ class roundcube_openpgp extends rcube_plugin {
             html::span('composeoption', html::label(null, $encrypt->show() . $this->gettext('encrypt'))),
             "composeoptions"
           );
-          $sign_opts = array('id' => 'openpgpjs_sign',
-                             'type' => 'checkbox');
-          if($this->rc->config->get('sign', false)) {
+          $sign_opts = array(
+            'id' => 'openpgpjs_sign',
+            'type' => 'checkbox'
+          );
+          if($this->rc->config->get('sign', true)) {
              $sign_opts['checked'] = 'checked';
           }
           $sign = new html_inputfield($sign_opts);
@@ -130,10 +138,13 @@ class roundcube_openpgp extends rcube_plugin {
     $this->rc->output->add_footer($this->rc->output->just_parse(
       file_get_contents($template_path . '/templates/key_manager.html') .
       file_get_contents($template_path . '/templates/key_search.html') .
-      file_get_contents($template_path . '/templates/key_select.html')));
-    $this->rc->output->add_footer(html::div(array('style' => "visibility: hidden;",
-                                                  'id' => "openpgpjs_identities"),
-                                  json_encode($this->rc->user->list_identities())));
+      file_get_contents($template_path . '/templates/key_select.html'))
+    );
+    $this->rc->output->add_footer(
+      html::div(array('style' => "visibility: hidden;",
+      'id' => "openpgpjs_identities"),
+      json_encode($this->rc->user->list_identities()))
+    );
 
     return $params;
   }
@@ -164,7 +175,7 @@ class roundcube_openpgp extends rcube_plugin {
       $pool = $this->rc->config->get('sks_key_pool');
       $op = "";
       $search = "";
-          
+
       if(!isset($_POST['op']) || !isset($_POST['search'])) {
         return $this->rc->output->command(
           'plugin.pks_search',
@@ -177,17 +188,16 @@ class roundcube_openpgp extends rcube_plugin {
         $search = $_POST["search"];
       }
 
-      if($op != "get" &&
-         $op != "index" &&
-         $op != "vindex")
+      if ($op != "get" && $op != "index" && $op != "vindex") {
         return $this->rc->output->command(
           'plugin.pks_search',
           array(
             'message' => "ERR: Invalid operation",
             'op' => htmlspecialchars($op)
           ));
+      }
 
-      if($op == "index") {
+      if ($op == "index") {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_URL, $pool . ":11371/pks/lookup?op=index&search={$search}");
@@ -195,11 +205,11 @@ class roundcube_openpgp extends rcube_plugin {
         $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
 
-        if($status == 200) {
+        if ($status == 200) {
           // TODO Fix search regex to match 32/64-bit str
           preg_match_all("/\/pks\/lookup\?op=vindex&amp;search=(.*)\">(.*)<\/a>/", $result, $m);
 
-          if(count($m[0]) > 0) {
+          if (count($m[0]) > 0) {
             $found = array();
             for($i = 0; $i < count($m[0]); $i++)
               $found[] = array($m[1][$i], $m[2][$i]);
@@ -219,11 +229,11 @@ class roundcube_openpgp extends rcube_plugin {
               'op' => htmlspecialchars($op)
             ));
         }
-      } elseif($op == "get") {
-        if(preg_match("/^0x[0-9A-F]{8}$/i", $search)) {
+      } elseif ($op == "get") {
+        if (preg_match("/^0x[0-9A-F]{8}$/i", $search)) {
           define("32_BIT_KEY", true);
           define("64_BIT_KEY", false);
-        } elseif(preg_match("/^0x[0-9A-F]{16}$/i", $search)) {
+        } elseif (preg_match("/^0x[0-9A-F]{16}$/i", $search)) {
           define("32_BIT_KEY", false);
           define("64_BIT_KEY", true);
         } else {
@@ -242,7 +252,7 @@ class roundcube_openpgp extends rcube_plugin {
         $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
 
-        if($status == 200) {
+        if ($status == 200) {
           preg_match_all("/-----BEGIN PGP PUBLIC KEY BLOCK-----(.*)-----END PGP PUBLIC KEY BLOCK-----/s", $result, $m);
           return $this->rc->output->command(
             'plugin.pks_search',

@@ -1,6 +1,6 @@
 .hidden {
-  display: none;
-  visibility: hidden;
+  display: none !important;
+  visibility: hidden !important;
 }
 ul.toolbarmenu li span.icon.key_manager {
   background: url(images/key_manager.png) -2px -1px no-repeat;
