@@ -33,3 +33,7 @@ $config['attach_public_key'] = true;
 
 // warn on sending an unencrypted message
 $config['warn_on_unencrypted'] = true;
+
+// set sks keyserver pool for key search
+// overview: https://sks-keyservers.net/overview-of-pools.php
+$config['sks_key_pool'] = 'http://pool.sks-keyservers.net';

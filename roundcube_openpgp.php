@@ -26,14 +26,13 @@
 
 class roundcube_openpgp extends rcube_plugin {
   public $task = 'mail|settings';
-  public $rc;
+  private $rc;
 
   /**
    * Plugin initialization.
    */
   function init() {
-    $this->rc = rcube::get_instance();
-    $this->rm = rcmail::get_instance();
+    $this->rc = rcmail::get_instance();
 
     // load configuration
     $this->load_config();
@@ -134,7 +133,7 @@ class roundcube_openpgp extends rcube_plugin {
       file_get_contents($template_path . '/templates/key_select.html')));
     $this->rc->output->add_footer(html::div(array('style' => "visibility: hidden;",
                                                   'id' => "openpgpjs_identities"),
-                                  json_encode($this->rm->user->list_identities())));
+                                  json_encode($this->rc->user->list_identities())));
 
     return $params;
   }
@@ -161,81 +160,95 @@ class roundcube_openpgp extends rcube_plugin {
    *    Please use http://pool.sks-keyservers.net as the source for this proxy
    */
   function hkp_search() {
-    if(!isset($_POST['op']) || !isset($_POST['search'])) {
-      return $this->rc->output->command(
-        'plugin.pks_search',
-        array('message' => "ERR: Missing param",
-              'op' => htmlspecialchars($_POST['op'])));
-        $op = "";
-        $search = "";
-    } else {
-      $op = $_POST["op"];
-      $search = $_POST["search"];
-    }
+    if ($this->rc->config->get('sks_key_pool', false)) {
+      $pool = $this->rc->config->get('sks_key_pool');
+      $op = "";
+      $search = "";
+          
+      if(!isset($_POST['op']) || !isset($_POST['search'])) {
+        return $this->rc->output->command(
+          'plugin.pks_search',
+          array(
+            'message' => "ERR: Missing param",
+            'op' => htmlspecialchars($_POST['op'])
+          ));
+      } else {
+        $op = $_POST["op"];
+        $search = $_POST["search"];
+      }
 
-    if($op != "get" &&
-       $op != "index" &&
-       $op != "vindex")
-      return $this->rc->output->command(
-        'plugin.pks_search',
-        array('message' => "ERR: Invalid operation",
-              'op' => htmlspecialchars($op)));
+      if($op != "get" &&
+         $op != "index" &&
+         $op != "vindex")
+        return $this->rc->output->command(
+          'plugin.pks_search',
+          array(
+            'message' => "ERR: Invalid operation",
+            'op' => htmlspecialchars($op)
+          ));
 
-    if($op == "index") {
-      $ch = curl_init();
-      curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-      curl_setopt($ch, CURLOPT_URL, "http://pool.sks-keyservers.net:11371/pks/lookup?op=index&search={$search}");
-      $result = curl_exec($ch);
-      $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-      curl_close($ch);
+      if($op == "index") {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_URL, $pool . ":11371/pks/lookup?op=index&search={$search}");
+        $result = curl_exec($ch);
+        $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
 
-      if($status == 200) {
-        // TODO Fix search regex to match 32/64-bit str
-        preg_match_all("/\/pks\/lookup\?op=vindex&amp;search=(.*)\">(.*)<\/a>/", $result, $m);
+        if($status == 200) {
+          // TODO Fix search regex to match 32/64-bit str
+          preg_match_all("/\/pks\/lookup\?op=vindex&amp;search=(.*)\">(.*)<\/a>/", $result, $m);
 
-        if(count($m[0]) > 0) {
-          $found = array();
-          for($i = 0; $i < count($m[0]); $i++)
-            $found[] = array($m[1][$i], $m[2][$i]);
+          if(count($m[0]) > 0) {
+            $found = array();
+            for($i = 0; $i < count($m[0]); $i++)
+              $found[] = array($m[1][$i], $m[2][$i]);
+            return $this->rc->output->command(
+              'plugin.pks_search',
+              array(
+                'message' => json_encode($found),
+                'op' => htmlspecialchars($op)
+              ));
+          }
+        } else {
+          preg_match("/Error handling request: (.*)<\/body>/", $result, $m);
           return $this->rc->output->command(
             'plugin.pks_search',
-            array('message' => json_encode($found),
+            array(
+              'message' => "ERR: " . htmlspecialchars($m[1]),
+              'op' => htmlspecialchars($op)
+            ));
+        }
+      } elseif($op == "get") {
+        if(preg_match("/^0x[0-9A-F]{8}$/i", $search)) {
+          define("32_BIT_KEY", true);
+          define("64_BIT_KEY", false);
+        } elseif(preg_match("/^0x[0-9A-F]{16}$/i", $search)) {
+          define("32_BIT_KEY", false);
+          define("64_BIT_KEY", true);
+        } else {
+          return $this->rc->output->command(
+            'plugin.pks_search',
+            array(
+              'message' => "ERR: Incorrect search format for this operation",
+              'op' => htmlspecialchars($op)
+            ));
+        }
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_URL, $pool . ":11371/pks/lookup?op=get&search={$search}");
+        $result = curl_exec($ch);
+        $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        if($status == 200) {
+          preg_match_all("/-----BEGIN PGP PUBLIC KEY BLOCK-----(.*)-----END PGP PUBLIC KEY BLOCK-----/s", $result, $m);
+          return $this->rc->output->command(
+            'plugin.pks_search',
+            array('message' => json_encode($m),
                   'op' => htmlspecialchars($op)));
         }
-      } else {
-        preg_match("/Error handling request: (.*)<\/body>/", $result, $m);
-        return $this->rc->output->command(
-          'plugin.pks_search',
-          array('message' => "ERR: " . htmlspecialchars($m[1]),
-                'op' => htmlspecialchars($op)));
-      }
-    } elseif($op == "get") {
-      if(preg_match("/^0x[0-9A-F]{8}$/i", $search)) {
-        define("32_BIT_KEY", true);
-        define("64_BIT_KEY", false);
-      } elseif(preg_match("/^0x[0-9A-F]{16}$/i", $search)) {
-        define("32_BIT_KEY", false);
-        define("64_BIT_KEY", true);
-      } else {
-        return $this->rc->output->command(
-          'plugin.pks_search',
-          array('message' => "ERR: Incorrect search format for this operation",
-                'op' => htmlspecialchars($op)));
-      }
-
-      $ch = curl_init();
-      curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-      curl_setopt($ch, CURLOPT_URL, "http://pool.sks-keyservers.net:11371/pks/lookup?op=get&search={$search}");
-      $result = curl_exec($ch);
-      $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-      curl_close($ch);
-
-      if($status == 200) {
-        preg_match_all("/-----BEGIN PGP PUBLIC KEY BLOCK-----(.*)-----END PGP PUBLIC KEY BLOCK-----/s", $result, $m);
-        return $this->rc->output->command(
-          'plugin.pks_search',
-          array('message' => json_encode($m),
-                'op' => htmlspecialchars($op)));
       }
     }
   }
@@ -312,6 +325,16 @@ class roundcube_openpgp extends rcube_plugin {
         'content' => $warn_on_unencrypted->show($this->rc->config->get('warn_on_unencrypted', true)?1:0),
       );
     }
+
+    // set sks keyserver pool for key search
+    if (!isset($no_override['sks_key_pool'])) {
+      $field_id = 'rcmfd_sks_key_pool';
+      $sks_key_pool = new html_inputfield(array('name' => '_sks_key_pool', 'id' => $field_id, 'value' => $this->rc->config->get('sks_key_pool')));
+      $p['blocks']['openpgp']['options']['sks_key_pool'] = array(
+        'title' => html::label($field_id, Q($this->gettext('sks_key_pool'))),
+        'content' => $sks_key_pool->show(),
+      );
+    }
     return $p;
   }
 
@@ -329,6 +352,7 @@ class roundcube_openpgp extends rcube_plugin {
         'sign'                => get_input_value('_sign', RCUBE_INPUT_POST) ? true : false,
         'attach_public_key'   => get_input_value('_attach_public_key', RCUBE_INPUT_POST) ? true : false,
         'warn_on_unencrypted' => get_input_value('_warn_on_unencrypted', RCUBE_INPUT_POST) ? true : false,
+        'sks_key_pool'        => trim(get_input_value('_sks_key_pool', RCUBE_INPUT_POST)),
       );
     }
 
@@ -338,7 +362,7 @@ class roundcube_openpgp extends rcube_plugin {
   /**
    * Handler for message_compose hook
    * Attaches dummy public key
-   * 
+   *
    * @param array Original parameters
    * @return array Modified parameters
    */
@@ -375,7 +399,7 @@ class roundcube_openpgp extends rcube_plugin {
       if(file_exists($file)) {
         @unlink($file);
       }
-      
+
       // write public key
       $content = ' ';
       $publicKey = trim(get_input_value('_publickey', RCUBE_INPUT_POST));
