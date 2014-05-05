@@ -50,6 +50,10 @@ $labels['always_encrypt'] = 'Zawsze szyfruj wiadomości';
 $labels['always_sign'] = 'Zawsze podpisuj cyfrowo wiadomości';
 $labels['attach_public_key'] = 'Automatically attach public key';
 $labels['openpgp'] = 'OpenPGP';
+$labels['sks_key_server'] = 'SKS keyserver';
+$labels['sks_key_port'] = 'SKS keyserver port';
+$labels['use_hkps'] = 'Keyserver supports HKPS';
+$labels['hkps_cert'] = 'CA certificate for HKPS';
 $labels['warn_on_unencrypted'] = 'Warn on sending an unencrypted message';
 
 // compose
