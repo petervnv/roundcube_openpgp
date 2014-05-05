@@ -285,7 +285,7 @@ rcube_webmail.prototype.openpgp_display_key_info = function(message)
   try {
     var sender = this.env.sender.match(/[a-zA-Z0-9\._%+-]+@[a-zA-Z0-9\._%+-]+\.[a-zA-Z]{2,4}/g)[0],
       publicKey = keyring.publicKeys.getForAddress(sender),
-      fingerprint = publicKey[0].primaryKey.getFingerprint().toUpperCase().substring(8).replace(/(.{4})/g,"$1 ");
+      fingerprint = publicKey[0].primaryKey.getFingerprint().toUpperCase().replace(/(.{4})/g,"$1 ");
   } catch (e) {
     return false;
   }
