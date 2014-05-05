@@ -5,7 +5,7 @@ Attention
 ---------
 Please don't use this plugin for anything real yet, it has never been reviewed. 
 Unless you're experimenting you should use something that works and has been reviewed.
-Also read [What’s wrong with in-browser cryptography?][wrong]
+Also read [What’s wrong with in-browser cryptography?][wrong] and [Javascript Cryptography Considered Harmful][harmful].
 
 Introduction
 ------------
@@ -49,5 +49,6 @@ For any bug reports or feature requests please refer to the [tracking system][is
 [openpgpjs]: https://openpgpjs.org/
 [issues]: https://github.com/lazlolazlolazlo/roundcube_openpgp/issues
 [wrong]: http://tonyarcieri.com/whats-wrong-with-webcrypto
+[harmful]: http://www.matasano.com/articles/javascript-cryptography/
 [why]: http://www.pgpi.org/doc/whypgp/en/
 [draft]: https://tools.ietf.org/html/draft-shaw-openpgp-hkp-00
