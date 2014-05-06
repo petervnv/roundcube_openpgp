@@ -3,8 +3,8 @@ Roundcube OpenPGP
 
 Attention
 ---------
-Please don't use this plugin for anything real yet, it has never been reviewed. 
-Unless you're experimenting you should use something that works and has been reviewed.
+Please __don't__ use this plugin for anything real yet, it has never been reviewed. 
+Unless you're experimenting you should use something that _works_ and has been _reviewed_.
 Also read [What’s wrong with in-browser cryptography?][wrong] and [Javascript Cryptography Considered Harmful][harmful].
 
 Introduction
