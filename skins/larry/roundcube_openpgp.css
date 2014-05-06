@@ -28,7 +28,7 @@ ul.toolbarmenu li span.icon.key_manager {
   background: transparent;
   padding: 0;
 }
-#openpgpjs_import textarea {
+#openpgpjs_key_manager textarea {
   width: 555px;
   height: 175px;
 }

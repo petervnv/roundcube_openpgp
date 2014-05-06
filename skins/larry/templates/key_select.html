@@ -1,24 +1,26 @@
 <div id='openpgpjs_key_select' class='propform popupdialog'>
-  <fieldset>
-    <div id='key_select_msg'class='manager-objects'></div>
-    <table id='openpgpjs_key_select_list' class='records-table'>
-      <thead>
-        <tr class='boxtitle'>
-          <td><roundcube:label name="roundcube_openpgp.fingerprint" /></td>
-          <td><roundcube:label name="roundcube_openpgp.person" /></td>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-    <div id='openpgpjs_selected'>
-      <strong><roundcube:label name="roundcube_openpgp.selected" />:</strong>
-      <i><roundcube:label name="roundcube_openpgp.none" /></i>
-    </div>
-    <input type='hidden' id='openpgpjs_selected_id' value='-1' />
-    <p><label for='passphrase'><roundcube:label name="roundcube_openpgp.passphrase" />:</label> <input type='password' id='selected_key_passphrase' /></p>
-    <p><input type='checkbox' id='openpgpjs_rememberpass' /> <roundcube:label name="roundcube_openpgp.remember_this_session" /></p>
-    <div class='formbuttons'>
-      <input type='button' class='button' value='OK' onclick='rcmail.openpgp_set_passphrase($("#openpgpjs_selected_id").val(), $("#selected_key_passphrase").val());' />
-    </div>
-  </fieldset>
+  <table id='openpgpjs_key_select_list' class='records-table'>
+    <thead>
+      <tr class='boxtitle'>
+        <td><roundcube:label name="roundcube_openpgp.fingerprint" /></td>
+        <td><roundcube:label name="roundcube_openpgp.person" /></td>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+  <div id='openpgpjs_selected'>
+    <strong><roundcube:label name="roundcube_openpgp.selected" />:</strong>
+    <i><roundcube:label name="roundcube_openpgp.none" /></i>
+  </div>
+  <input type='hidden' id='openpgpjs_selected_id' value='-1' />
+  <form onSubmit='rcmail.openpgp_set_passphrase($("#openpgpjs_selected_id").val(), $("#selected_key_passphrase").val()); return false;'>
+    <fieldset>
+      <div id='key_select_msg'class='manager-objects'></div>
+      <label for='passphrase'><roundcube:label name="roundcube_openpgp.passphrase" />:</label> <input type='password' id='selected_key_passphrase' />
+      <input type='checkbox' id='openpgpjs_rememberpass' /> <roundcube:label name="roundcube_openpgp.remember_this_session" />
+      <div class='formbuttons'>
+        <input type='submit' class='button' value='OK' />
+      </div>
+    </fieldset>
+  </form>
 </div>
