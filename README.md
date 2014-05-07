@@ -12,7 +12,7 @@ Introduction
 Roundcube OpenPGP is an open source (GPLv2) extension adding OpenPGP support
 to the Roundcube webmail project. Roundcube OpenPGP is written with the intention to
 be as user friendly as possible for everyday PGP use. See
-[Why do you need PGP?][why], [OpenPGP.js][openpgpjs] and [Roundcube][roundcube]
+[Why do you need PGP?][why], [Encrypted email][encrypted], [OpenPGP.js][openpgpjs] and [Roundcube][roundcube]
 for more info.
 
 Features
@@ -27,6 +27,23 @@ Installation
 ------------
 1. Copy plugin to 'plugins' folder
 2. Add 'roundcube_openpgp' to the $config['plugins'] array in your Roundcube config (config/config.inc.php)
+3. Copy 'config.inc.php.dist' to 'config.inc.php' and configure the plugin or keep the defaults
+
+Usage
+-----
+_Note that in order to use this plugin your browsers needs to support [window.crypto.getRandomValues][random]._
+
+First import your public and private key (if you do not have a key pair, generate one first)
+
+### Sending emails
+When sending emails you can choose if you want to sign and / or encrypt the message.
+To encrypt a message you have to have the public keys of the receipients of the message in the key mamager.
+If this is not the case import them into the key manager or use the key search to import them.
+For signing the email your private key is needed, if you have multiple private keys you will be prompted to choose one before sending.
+
+### Receiving emails
+For receiving messages it is the other way around, to decrypt an encrypted message you need your private key.
+For verifying the signature of the message you need the public key of the sender.
 
 Key storage
 -----------
@@ -52,3 +69,5 @@ For any bug reports or feature requests please refer to the [tracking system][is
 [harmful]: http://www.matasano.com/articles/javascript-cryptography/
 [why]: http://www.pgpi.org/doc/whypgp/en/
 [draft]: https://tools.ietf.org/html/draft-shaw-openpgp-hkp-00
+[random]: https://developer.mozilla.org/en-US/docs/Web/API/window.crypto.getRandomValues#Browser_Compatibility
+[encrypted]: https://www.riseup.net/en/encrypted-email
