@@ -715,7 +715,7 @@ rcube_webmail.prototype.openpgp_import_public_key = function(publicKey)
 
     // update key manager and empty import form
     this.openpgp_update_key_manager();
-    $("#importPubkeyField").val("");
+    $("#publickey").val("");
 
     this.openpgp_display_message(
       rcmail.gettext("import_completed", "roundcube_openpgp"),
@@ -780,7 +780,7 @@ rcube_webmail.prototype.openpgp_import_private_key = function(key, passphrase)
 
   // update key manager and empty import form
   this.openpgp_update_key_manager();
-  $("#importPrivkeyField").val("");
+  $("#privatekey").val("");
   $("#passphrase").val("");
 
   this.openpgp_display_message(
@@ -856,9 +856,9 @@ rcube_webmail.prototype.openpgp_pks_search_callback = function(response)
     }
   } else if (response.op === "get") {
     var k = JSON.parse(response.message);
-    $("#importPubkeyField").val(k[0]);
+    $("#publickey").val(k[0]);
 
-    if (rcmail.openpgp_import_public_key($("#importPubkeyField").val())) {
+    if (rcmail.openpgp_import_public_key($("#publickey").val())) {
       alert(rcmail.gettext("pubkey_import_success", "roundcube_openpgp"));
     }
   }
@@ -1072,7 +1072,6 @@ rcube_webmail.prototype.openpgp_update_key_manager = function()
     del = "<a href='#' onclick='if (confirm(\"" + this.gettext('delete_pub', 'roundcube_openpgp') + "\")) { rcmail.openpgp_remove_key(\"" + keyId + "\", false); rcmail.openpgp_update_key_manager(); }'>" + this.gettext('delete', 'roundcube_openpgp') + "</a>";
     exp = "<a href=\"data:asc," + encodeURIComponent(keyring.publicKeys.keys[i].armor()) + "\" download=\"pubkey_" + "0x" + keyId.toUpperCase().substring(8) + ".asc\">Export</a> ";
     result = "<tr>" +
-      "<td>" + keyId      + "</td>" +
       "<td>" + fingerprint + "</td>" +
       "<td>" + person      + "</td>" +
       "<td>" + length_alg  + "</td>" +
@@ -1097,7 +1096,6 @@ rcube_webmail.prototype.openpgp_update_key_manager = function()
       del = "<a href='#' onclick='if (confirm(\"" + this.gettext('delete_priv', 'roundcube_openpgp') + "\")) { rcmail.openpgp_remove_key(\"" + keyId + "\", true); rcmail.openpgp_update_key_manager(); }'>" + this.gettext('delete', 'roundcube_openpgp') + "</a>";
       exp = "<a href=\"data:asc," + encodeURIComponent(keyring.privateKeys.keys[i].armor()) + "\" download=\"privkey_" + "0x" + keyId.toUpperCase().substring(8) + ".asc\">Export</a> ";
       result = "<tr>" +
-        "<td>" + keyId      + "</td>" +
         "<td>" + fingerprint + "</td>" +
         "<td>" + person      + "</td>" +
         "<td>" + length_alg  + "</td>" +

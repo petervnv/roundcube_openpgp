@@ -35,6 +35,13 @@ ul.toolbarmenu li span.icon.key_manager {
 #generated_private, #generated_public { width: 45%; float: left; text-align: left; font-size: 7pt; }
 #openpgpjs_search_results { width: 99%; overflow: scroll; }
 
+thead .fingerprint {
+  width: 330px;
+}
+thead .person {
+  width: 350px;
+}
+
 /* Additional styles for the messages in mail view and key manager.
    Roundcube only includes a "notice" style for this area. */
 .manager-objects div {

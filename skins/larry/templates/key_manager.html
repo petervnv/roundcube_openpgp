@@ -10,9 +10,8 @@
       <table id="openpgpjs_pubkeys" class="records-table">
         <thead>
           <tr class="boxtitle">
-            <td><roundcube:label name="roundcube_openpgp.key_id" /></td>
-            <td><roundcube:label name="roundcube_openpgp.fingerprint" /></td>
-            <td><roundcube:label name="roundcube_openpgp.person" /></td>
+            <td class="fingerprint"><roundcube:label name="roundcube_openpgp.fingerprint" /></td>
+            <td class="person"><roundcube:label name="roundcube_openpgp.person" /></td>
             <td><roundcube:label name="roundcube_openpgp.length_alg" /></td>
             <td><roundcube:label name="roundcube_openpgp.status" /></td>
             <td><roundcube:label name="roundcube_openpgp.action" /></td>
@@ -36,9 +35,8 @@
       <table id="openpgpjs_privkeys" class="records-table">
         <thead>
           <tr class="boxtitle">
-            <td><roundcube:label name="roundcube_openpgp.key_id" /></td>
-            <td><roundcube:label name="roundcube_openpgp.fingerprint" /></td>
-            <td><roundcube:label name="roundcube_openpgp.person" /></td>
+            <td class="fingerprint"><roundcube:label name="roundcube_openpgp.fingerprint" /></td>
+            <td class="person"><roundcube:label name="roundcube_openpgp.person" /></td>
             <td><roundcube:label name="roundcube_openpgp.length_alg" /></td>
             <td><roundcube:label name="roundcube_openpgp.action" /></td>
           </tr>
@@ -46,7 +44,7 @@
         <tbody></tbody>
       </table>
       <br />
-      <form onsubmit="rcmail.openpgp_import_private_key($('#privatekey').val(), $('#passphrase').val()); $('#privatekey').val(''); $('#passphrase').val('');return false;">
+      <form onsubmit="rcmail.openpgp_import_private_key($('#privatekey').val(), $('#passphrase').val()); $('#privatekey').val(''); return false;">
         <fieldset>
           <legend><roundcube:label name="roundcube_openpgp.import_private" /></legend>
           <div id="import_private_msg"class="manager-objects"></div>
@@ -100,7 +98,7 @@
         <thead>
           <tr class="boxtitle">
             <td><roundcube:label name="roundcube_openpgp.key_id" /></td>
-            <td><roundcube:label name="roundcube_openpgp.person" /></td>
+            <td class="person"><roundcube:label name="roundcube_openpgp.person" /></td>
             <td><roundcube:label name="roundcube_openpgp.action" /></td>
           </tr>
         </thead>
