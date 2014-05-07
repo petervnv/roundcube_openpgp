@@ -21,7 +21,7 @@
         <tbody></tbody>
       </table>
       <br />
-      <form onSubmit="rcmail.openpgp_import_public_key($('#publickey').val()); $('#publickey').val(''); return false;">
+      <form onsubmit="rcmail.openpgp_import_public_key($('#publickey').val()); $('#publickey').val(''); return false;">
         <fieldset>
           <legend><roundcube:label name="roundcube_openpgp.import_public" /></legend>
           <div id="import_public_msg"class="manager-objects"></div>
@@ -46,7 +46,7 @@
         <tbody></tbody>
       </table>
       <br />
-      <form onSubmit="rcmail.openpgp_import_private_key($('#privatekey').val(), $('#passphrase').val()); $('#privatekey').val(''); $('#passphrase').val('');return false;">
+      <form onsubmit="rcmail.openpgp_import_private_key($('#privatekey').val(), $('#passphrase').val()); $('#privatekey').val(''); $('#passphrase').val('');return false;">
         <fieldset>
           <legend><roundcube:label name="roundcube_openpgp.import_private" /></legend>
           <div id="import_private_msg"class="manager-objects"></div>
@@ -60,7 +60,7 @@
       </form>
     </div>
     <div id="openpgpjs-tab3">
-      <form onSubmit="rcmail.openpgp_generate_key_pair($('#bits').val(), $('#algorithm').val()); return false;">
+      <form onsubmit="rcmail.openpgp_generate_key_pair($('#bits').val(), $('#algorithm').val()); return false;">
         <fieldset>
           <div id="generate_key_msg"class="manager-objects"></div>
           <label for="gen_ident"><roundcube:label name="roundcube_openpgp.ident" />:</label>
@@ -90,7 +90,7 @@
       <p>
         <roundcube:label name="roundcube_openpgp.search_description" />
       </p>
-      <form onSubmit="rcmail.http_post('plugin.pks_search', 'search=' + $('#search').val() + '&op=index'); $('#search').attr('disabled', 'disabled'); $('#search_submit').attr('disabled', 'disabled'); return false;">
+      <form onsubmit="rcmail.http_post('plugin.pks_search', 'search=' + $('#search').val() + '&op=index'); $('#search').attr('disabled', 'disabled'); $('#search_submit').attr('disabled', 'disabled'); return false;">
         <fieldset>
           <input id="search" type="text" autocomplete="off" autocapitalize="off" required="required" />
           <input id="search_submit" type="submit" value="<roundcube:label name="search" />" />
