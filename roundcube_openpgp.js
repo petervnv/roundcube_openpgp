@@ -324,14 +324,7 @@ rcube_webmail.prototype.openpgp_generate_key_pair = function(bits, algorithm)
   // currently only RSA is supported, fix this when OpenPGP.js implements ElGamal & DSA
   algorithm = parseInt(algorithm);
 
-  if ($("#gen_passphrase").val() === "") {
-    this.openpgp_display_message(
-      this.gettext("enter_pass", "roundcube_openpgp"),
-      'error',
-      'generate_key_msg'
-    );
-    return false;
-  } else if ($("#gen_passphrase").val() !== $("#gen_passphrase_verify").val()) {
+  if ($("#gen_passphrase").val() !== $("#gen_passphrase_verify").val()) {
     this.openpgp_display_message(
       this.gettext("pass_mismatch", "roundcube_openpgp"),
       'error',
@@ -436,8 +429,8 @@ rcube_webmail.prototype.openpgp_recipient_public_keys = function()
                   ". If you already have it you can import it into the key manager. " +
                   "Would you like to query the key server for the missing key?")) {
         this.http_post("plugin.pks_search", "search=" + recipient + "&op=index");
-        $("#openpgpjs_search_input").attr("disabled", "disabled");
-        $("#openpgpjs_search_submit").attr("disabled", "disabled");
+        $("#search").attr("disabled", "disabled");
+        $("#search_submit").attr("disabled", "disabled");
         $("#openpgpjs_key_manager").dialog("open");
         // open key search tab
         $("#openpgpjs_tabs").tabs({ active: 3 });
@@ -751,14 +744,6 @@ rcube_webmail.prototype.openpgp_import_public_key = function(publicKey)
 rcube_webmail.prototype.openpgp_import_private_key = function(key, passphrase)
 {
   var privateKey;
-  if (passphrase === "") {
-    this.openpgp_display_message(
-      this.gettext("enter_pass", "roundcube_openpgp"),
-      'error',
-      'import_private_msg'
-    );
-    return false;
-  }
 
   try {
     privateKey = openpgp.key.readArmored(key).keys[0];
@@ -832,8 +817,8 @@ rcube_webmail.prototype.openpgp_public_key_search = function(search, op)
 
 rcube_webmail.prototype.openpgp_pks_search_callback = function(response)
 {
-  $("#openpgpjs_search_input").removeAttr("disabled");
-  $("#openpgpjs_search_submit").removeAttr("disabled");
+  $("#search").removeAttr("disabled");
+  $("#search_submit").removeAttr("disabled");
 
   if (response.message === "ERR: Missing param") {
     console.log("Missing param");
