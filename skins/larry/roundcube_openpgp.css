@@ -39,7 +39,7 @@ ul.toolbarmenu li span.icon.key_manager {
   float: left;
 }
 
-#openpgpjs_tabs a {
+#openpgpjs_tabs ul a {
   background: transparent no-repeat 15px 50%;
   padding-left: 50px;
 }
@@ -54,6 +54,9 @@ ul.toolbarmenu li span.icon.key_manager {
 }
 #openpgpjs_key_manager #import_keys {
   background-image: url(images/import_keys.png);
+}
+#openpgpjs_key_manager #export_keys {
+  background-image: url(images/export_keys.png);
 }
 #openpgpjs_key_manager #key_search {
   background-image: url(images/key_search.png);

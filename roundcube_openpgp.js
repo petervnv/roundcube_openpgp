@@ -431,7 +431,7 @@ rcube_webmail.prototype.openpgp_recipient_public_keys = function()
         $("#search_submit").attr("disabled", "disabled");
         $("#openpgpjs_key_manager").dialog("open");
         // open key search tab
-        $("#openpgpjs_tabs").tabs({ active: 4 });
+        $("#openpgpjs_tabs").tabs({ active: 5 });
       }
       return false;
     }
@@ -686,6 +686,11 @@ rcube_webmail.prototype.openpgp_import_generated_key_pair = function()
 };
 
 
+/**
+ * Import armored public and private keys
+ *
+ * @param armored {String} Armored public and private keys
+ */
 rcube_webmail.prototype.openpgp_import_keys = function(armored)
 {
   // empty message container
@@ -728,7 +733,6 @@ rcube_webmail.prototype.openpgp_import_keys = function(armored)
           false
         );
       }
-
     });
   }
 
@@ -761,6 +765,49 @@ rcube_webmail.prototype.openpgp_import_keys = function(armored)
   // update key manager and empty import form
   this.openpgp_update_key_manager();
   $("#keys").val("");
+};
+
+
+/**
+ * Export public and private keys as armored text
+ */
+rcube_webmail.prototype.openpgp_export_keys = function()
+{
+  var i, j, exported = '';
+
+  try {
+    // empty message container
+    $('#export_keys_msg').html('');
+
+    // empty export textarea
+    $('#export').html('');
+
+    // loop through all public keys
+    for (i = 0; i < keyring.publicKeys.keys.length; i++) {
+      exported = exported + keyring.publicKeys.keys[i].armor();
+    }
+
+    // loop through all private keys
+    for (i = 0; i < this.openpgp_private_key_count(); i++) {
+      exported = exported + keyring.privateKeys.keys[i].armor();
+    }
+
+    $('#export').html(exported);
+
+    rcmail.openpgp_display_message(
+      rcmail.gettext("export_complete", "roundcube_openpgp"),
+      'confirmation',
+      'export_keys_msg'
+    );
+  } catch (e) {
+    rcmail.openpgp_display_message(
+      rcmail.gettext("export_failed", "roundcube_openpgp"),
+      'error',
+      'export_keys_msg'
+    );
+  }
+
+
 };
 
 

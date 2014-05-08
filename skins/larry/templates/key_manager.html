@@ -5,7 +5,8 @@
       <li><a id="private_keys" href="#openpgpjs-tab2"><roundcube:label name="roundcube_openpgp.private_keys" /></a></li>
       <li><a id="generate_keys" href="#openpgpjs-tab3"><roundcube:label name="roundcube_openpgp.generate_keys" /></a></li>
       <li><a id="import_keys" href="#openpgpjs-tab4"><roundcube:label name="roundcube_openpgp.import_keys" /></a></li>
-      <li><a id="key_search" href="#openpgpjs-tab5"><roundcube:label name="roundcube_openpgp.key_search" /></a></li>
+      <li><a id="export_keys" href="#openpgpjs-tab5"><roundcube:label name="roundcube_openpgp.export_keys" /></a></li>
+      <li><a id="key_search" href="#openpgpjs-tab6"><roundcube:label name="roundcube_openpgp.key_search" /></a></li>
     </ul>
     <div id="openpgpjs-tab1">
       <table id="openpgpjs_pubkeys" class="records-table">
@@ -78,6 +79,14 @@
       <div id="import_keys_msg"class="manager-objects"></div>
     </div>
     <div id="openpgpjs-tab5">
+      <p><roundcube:label name="roundcube_openpgp.export_keys_desc" /></p>
+      <div id="export_keys_msg"class="manager-objects"></div>
+      <div class="formbuttons">
+        <input type="submit" class="button mainaction" value="<roundcube:label name="export" />"  onclick="rcmail.openpgp_export_keys(); return false;" />
+      </div>
+      <textarea id="export" required="required"></textarea>
+    </div>
+    <div id="openpgpjs-tab6">
       <p>
         <roundcube:label name="roundcube_openpgp.search_description" />
       </p>
