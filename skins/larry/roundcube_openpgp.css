@@ -18,6 +18,9 @@ ul.toolbarmenu li span.icon.key_manager {
 #openpgpjs_key_manager.ui-dialog-content {
   padding: 0;
 }
+#openpgpjs_key_manager .ui-tabs .ui-tabs-nav li {
+  background: transparent;
+}
 #openpgpjs_tabs {
   min-height: 500px;
 }
@@ -34,6 +37,26 @@ ul.toolbarmenu li span.icon.key_manager {
 }
 #openpgpjs-tab4 form, #openpgpjs-tab4 .manager-objects {
   float: left;
+}
+
+#openpgpjs_tabs a {
+  background: transparent no-repeat 15px 50%;
+  padding-left: 50px;
+}
+#openpgpjs_key_manager #public_keys {
+  background-image: url(images/public_keys.png);
+}
+#openpgpjs_key_manager #private_keys {
+  background-image: url(images/private_keys.png);
+}
+#openpgpjs_key_manager #generate_keys {
+  background-image: url(images/generate_keys.png);
+}
+#openpgpjs_key_manager #import_keys {
+  background-image: url(images/import_keys.png);
+}
+#openpgpjs_key_manager #key_search {
+  background-image: url(images/key_search.png);
 }
 
 #generated_private, #generated_public { width: 45%; float: left; text-align: left; font-size: 7pt; }
