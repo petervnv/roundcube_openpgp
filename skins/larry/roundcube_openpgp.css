@@ -36,10 +36,22 @@ ul.toolbarmenu li span.icon.key_manager {
 #openpgpjs_search_results { width: 99%; overflow: scroll; }
 
 thead .fingerprint {
-  width: 330px;
+  width: 28%;
 }
-thead .person {
-  width: 350px;
+thead .algo {
+  width: 12%;
+}
+thead .creation {
+  width: 6%;
+}
+thead .expiration {
+  width: 8%;
+}
+thead .status {
+  width: 4%;
+}
+thead .action {
+  width: 8%;
 }
 
 /* Additional styles for the messages in mail view and key manager.

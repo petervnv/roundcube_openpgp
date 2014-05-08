@@ -54,7 +54,7 @@ window.rcmail && rcmail.addEventListener('init', function(evt) {
     modal: true,
     autoOpen: false,
     title: rcmail.gettext("key_select", "roundcube_openpgp"),
-    width: "700px",
+    width: "800px",
     open: function () {
       rcmail.openpgp_update_key_selector();
     },
@@ -69,7 +69,7 @@ window.rcmail && rcmail.addEventListener('init', function(evt) {
     modal: true,
     autoOpen: false,
     title: rcmail.gettext("key_manager", "roundcube_openpgp"),
-    width: "1100px",
+    width: "1200px",
     open: function () {
       rcmail.openpgp_update_key_manager();
     },
@@ -291,16 +291,14 @@ rcube_webmail.prototype.openpgp_display_key_info = function(message)
   }
 
   if (typeof(this.getinfo) === "undefined") {
+    var creation = message.packets[0].created;
     $(".headers-table").css( "float", "left" ).after("<table class='openpgpjs_info headers-table'><tbody></tbody></table>");
 
-    // Carefully escape anything that is appended to the info table, otherwise
-    // anyone clever enough to write arbitrary data to their pubkey has a clear
-    // exploitation path.
     $(".openpgpjs_info tbody").append(
       "<tr><td class='header-title'>"+this.gettext("algorithm", "roundcube_openpgp") +":</td>" +
       "<td class='header'>" + this.openpgp_type_to_string(message.packets[0].publicKeyAlgorithm) + "</td></tr>" +
-      "<tr><td class='header-title'>Created:</td>" +
-      "<td class='header'>" + this.openpgp_escape_html(String(message.packets[0].created))  + "</td></tr>" +
+      "<tr><td class='header-title'>"+this.gettext("creation", "roundcube_openpgp") +":</td>" +
+      "<td class='header'>" + creation.getFullYear() + "-" +  ("0" + (creation.getMonth()+1)).slice(-2) + "-" + ("0" + creation.getDate()).slice(-2) + "</td></tr>" +
       "<tr><td class='header-title'>"+this.gettext("fingerprint", "roundcube_openpgp") +":</td>" +
       "<td class='header'>" + fingerprint + "</td></tr>"
     );
@@ -978,6 +976,46 @@ rcube_webmail.prototype.openpgp_get_algorithm = function(id, private=false)
 
 
 /**
+ * Returns the status of the key as String (invalid, expired, revoked, 
+ * valid, no self cert)
+ *
+ * @param id {Integer} Key id in keyring
+ * @param private {Boolean} Private key
+ * @return {String} Key status
+ */
+rcube_webmail.prototype.openpgp_verify_key = function(id, private=false)
+{
+  var status;
+  if (private) {
+    status = keyring.privateKeys.keys[id].verifyPrimaryKey();
+  } else {
+    status = keyring.publicKeys.keys[id].verifyPrimaryKey();
+  }
+
+  switch(status) {
+    // invalid
+    case 0:
+      return this.gettext("invalid", "roundcube_openpgp");
+    // expired
+    case 1:
+      return this.gettext("expired", "roundcube_openpgp");
+    // revoked
+    case 2:
+      return this.gettext("revoked", "roundcube_openpgp");
+    // valid
+    case 3:
+      return this.gettext("valid", "roundcube_openpgp");
+    // no self cert
+    case 4:
+      return this.gettext("invalid", "roundcube_openpgp");
+    // invalid
+    default:
+      return this.gettext("invalid", "roundcube_openpgp");
+  }
+};
+
+
+/**
  * Returns the fingerprint of a key in the keyring
  *
  * @param id {Integer} Key id in keyring
@@ -1060,7 +1098,7 @@ rcube_webmail.prototype.openpgp_update_key_manager = function()
   // empty public key table
   $("#openpgpjs_pubkeys tbody").empty();
 
-  var i, keyId, fingerprint, person, length_alg, status, del, exp, result;
+  var i, keyId, fingerprint, person, length_alg, created, expired, status, del, exp, result;
 
   // fill public key table
   for (i = 0; i < keyring.publicKeys.keys.length; i++) {
@@ -1068,13 +1106,21 @@ rcube_webmail.prototype.openpgp_update_key_manager = function()
     fingerprint = this.openpgp_get_fingerprint(i);
     person = this.openpgp_escape_html(keyring.publicKeys.keys[i].getUserIds()[0]);
     length_alg = this.openpgp_get_algorithm(i);
-    status = (keyring.publicKeys.keys[i].verifyPrimaryKey() ? this.gettext("valid", "roundcube_openpgp") : this.gettext("invalid", "roundcube_openpgp"));
+    creation = keyring.publicKeys.keys[i].primaryKey.created;
+    expiration = this.gettext("no_expiration", "roundcube_openpgp");
+    if (keyring.publicKeys.keys[i].getExpirationTime()) {
+      expiration = keyring.publicKeys.keys[i].getExpirationTime();
+      expiration = expiration.getFullYear() + "-" +  ("0" + (expiration.getMonth()+1)).slice(-2) + "-" + ("0" + expiration.getDate()).slice(-2);
+    }
+    status = this.openpgp_verify_key(i);
     del = "<a href='#' onclick='if (confirm(\"" + this.gettext('delete_pub', 'roundcube_openpgp') + "\")) { rcmail.openpgp_remove_key(\"" + keyId + "\", false); rcmail.openpgp_update_key_manager(); }'>" + this.gettext('delete', 'roundcube_openpgp') + "</a>";
     exp = "<a href=\"data:asc," + encodeURIComponent(keyring.publicKeys.keys[i].armor()) + "\" download=\"pubkey_" + "0x" + keyId.toUpperCase().substring(8) + ".asc\">Export</a> ";
     result = "<tr>" +
       "<td>" + fingerprint + "</td>" +
       "<td>" + person      + "</td>" +
       "<td>" + length_alg  + "</td>" +
+      "<td>" + creation.getFullYear() + "-" +  ("0" + (creation.getMonth()+1)).slice(-2) + "-" + ("0" + creation.getDate()).slice(-2) + "</td>" +
+      "<td>" + expiration  + "</td>" +
       "<td>" + status      + "</td>" +
       "<td>" + exp + del   + "</td>" +
       "</tr>";
@@ -1093,12 +1139,20 @@ rcube_webmail.prototype.openpgp_update_key_manager = function()
       fingerprint = this.openpgp_get_fingerprint(i, true);
       person = this.openpgp_escape_html(keyring.privateKeys.keys[i].getUserIds()[j]);
       length_alg = this.openpgp_get_algorithm(i, true);
+      creation = keyring.privateKeys.keys[i].primaryKey.created;
+      expiration = this.gettext("no_expiration", "roundcube_openpgp");
+      if (keyring.privateKeys.keys[i].getExpirationTime()) {
+        expiration = keyring.publicKeys.keys[i].getExpirationTime();
+        expiration = expiration.getFullYear() + "-" +  ("0" + (expiration.getMonth()+1)).slice(-2) + "-" + ("0" + expiration.getDate()).slice(-2);
+      }
       del = "<a href='#' onclick='if (confirm(\"" + this.gettext('delete_priv', 'roundcube_openpgp') + "\")) { rcmail.openpgp_remove_key(\"" + keyId + "\", true); rcmail.openpgp_update_key_manager(); }'>" + this.gettext('delete', 'roundcube_openpgp') + "</a>";
       exp = "<a href=\"data:asc," + encodeURIComponent(keyring.privateKeys.keys[i].armor()) + "\" download=\"privkey_" + "0x" + keyId.toUpperCase().substring(8) + ".asc\">Export</a> ";
       result = "<tr>" +
         "<td>" + fingerprint + "</td>" +
         "<td>" + person      + "</td>" +
         "<td>" + length_alg  + "</td>" +
+        "<td>" + creation.getFullYear() + "-" +  ("0" + (creation.getMonth()+1)).slice(-2) + "-" + ("0" + creation.getDate()).slice(-2) + "</td>" +
+        "<td>" + expiration  + "</td>" +
         "<td>" + exp + del   + "</td>" +
         "</tr>";
 
