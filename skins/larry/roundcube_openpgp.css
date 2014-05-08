@@ -19,19 +19,23 @@ ul.toolbarmenu li span.icon.key_manager {
   padding: 0;
 }
 #openpgpjs_tabs {
-  min-height: 400px;
+  min-height: 500px;
 }
 #openpgpjs_tabs .ui-tabs {
   padding: 0;
 }
 #openpgpjs_tabs .ui-tabs-panel {
   background: transparent;
-  padding: 0;
+  padding: 10px;
 }
 #openpgpjs_key_manager textarea {
-  width: 555px;
-  height: 175px;
+  width: 570px;
+  height: 300px;
 }
+#openpgpjs-tab4 form, #openpgpjs-tab4 .manager-objects {
+  float: left;
+}
+
 #generated_private, #generated_public { width: 45%; float: left; text-align: left; font-size: 7pt; }
 #openpgpjs_search_results { width: 99%; overflow: scroll; }
 

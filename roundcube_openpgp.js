@@ -431,7 +431,7 @@ rcube_webmail.prototype.openpgp_recipient_public_keys = function()
         $("#search_submit").attr("disabled", "disabled");
         $("#openpgpjs_key_manager").dialog("open");
         // open key search tab
-        $("#openpgpjs_tabs").tabs({ active: 3 });
+        $("#openpgpjs_tabs").tabs({ active: 4 });
       }
       return false;
     }
@@ -676,117 +676,91 @@ rcube_webmail.prototype.openpgp_import_from_sks = function(id)
 rcube_webmail.prototype.openpgp_import_generated_key_pair = function()
 {
   $("#import_button").addClass("hidden");
-  var publicKey = this.openpgp_import_public_key($("#generated_public").html());
-  var privateKey = this.openpgp_import_private_key($("#generated_private").html(), $("#gen_passphrase").val());
 
-  if (publicKey && privateKey) {
-    rcmail.openpgp_display_message(
-      rcmail.gettext("import_gen", "roundcube_openpgp"),
-      'confirmation',
-      'generate_key_msg'
-    );
-  } else {
-    rcmail.openpgp_display_message(
-      rcmail.gettext("import_fail", "roundcube_openpgp"),
-      'error',
-      'generate_key_msg'
-    );
-  }
+  // import keys and change tabs
+  this.openpgp_import_keys($("#generated_public").html() + $("#generated_private").html());
+  $("#openpgpjs_tabs").tabs({ active: 3 });
 
   $("#gen_passphrase").val("");
   $("#gen_passphrase_verify").val("");
 };
 
 
-/**
- * Imports armored public key into the key manager
- *
- * @param publicKey {String} The armored public key
- * @return {Bool} Import successful
- */
-rcube_webmail.prototype.openpgp_import_public_key = function(publicKey)
+rcube_webmail.prototype.openpgp_import_keys = function(armored)
 {
-  try {
-    // store public key in keyring
-    keyring.publicKeys.importKey(publicKey);
-    keyring.store();
+  // empty message container
+  $('#import_keys_msg').html('');
 
-    // update key manager and empty import form
-    this.openpgp_update_key_manager();
-    $("#publickey").val("");
-
-    this.openpgp_display_message(
-      rcmail.gettext("import_completed", "roundcube_openpgp"),
-      'confirmation',
-      'import_public_msg'
-    );
-    return true;
-  } catch (e) {
-    this.openpgp_display_message(
-      rcmail.gettext("import_failed", "roundcube_openpgp"),
-      'error',
-      'import_public_msg'
-    );
-    return false;
-  }
-};
+  // match all public and private keys in armored input
+  var publicKeys = armored.match(/-----BEGIN PGP PUBLIC KEY BLOCK-----[\s\S]+?-----END PGP PUBLIC KEY BLOCK-----/g),
+    privateKeys = armored.match(/-----BEGIN PGP PRIVATE KEY BLOCK-----[\s\S]+?-----END PGP PRIVATE KEY BLOCK-----/g),
+    key;
 
 
-/**
- * Imports armored private key into the key manager
- *
- * @param key        {String} The armored private key
- * @param passphrase {String} The corresponding passphrase
- * @return {Bool} Import successful
- */
-rcube_webmail.prototype.openpgp_import_private_key = function(key, passphrase)
-{
-  var privateKey;
-
-  try {
-    privateKey = openpgp.key.readArmored(key).keys[0];
-  } catch (e) {
+  if (!publicKeys && !privateKeys) {
     this.openpgp_display_message(
       this.gettext("import_failed", "roundcube_openpgp"),
       'error',
-      'import_private_msg'
+      'import_keys_msg',
+      false
     );
-    return false;
   }
 
-  if (!privateKey) {
-    this.openpgp_display_message(
-      this.gettext("import_failed", "roundcube_openpgp"),
-      'error',
-      'import_private_msg'
-    );
-    return false;
+  if (publicKeys) {
+    publicKeys.forEach(function(publicKey) {
+      try {
+        key = openpgp.key.readArmored(publicKey);
+        // store public key in keyring
+        keyring.publicKeys.importKey(publicKey);
+        keyring.store();
+
+        rcmail.openpgp_display_message(
+          rcmail.gettext("import_public", "roundcube_openpgp") + " " + key.keys[0].getUserIds()[0],
+          'confirmation',
+          'import_keys_msg',
+          false
+        );
+      } catch (e) {
+        rcmail.openpgp_display_message(
+          rcmail.gettext("import_failed", "roundcube_openpgp"),
+          'error',
+          'import_keys_msg',
+          false
+        );
+      }
+
+    });
   }
 
-  if (!privateKey.decrypt(passphrase)) {
-    this.openpgp_display_message(
-      this.gettext("incorrect_pass", "roundcube_openpgp"),
-      'error',
-      'import_private_msg'
-    );
-    return false;
-  }
+  if (privateKeys) {
+    privateKeys.forEach(function(privateKey) {
+      try {
+        key = openpgp.key.readArmored(privateKey);
 
-  // store private key in keyring
-  keyring.privateKeys.importKey(key);
-  keyring.store();
+        // store private key in keyring
+        keyring.privateKeys.importKey(privateKey);
+        keyring.store();
+
+        rcmail.openpgp_display_message(
+          rcmail.gettext("import_private", "roundcube_openpgp") + " " + key.keys[0].getUserIds()[0],
+          'confirmation',
+          'import_keys_msg',
+          false
+        );
+      } catch (e) {
+        rcmail.openpgp_display_message(
+          rcmail.gettext("import_failed", "roundcube_openpgp"),
+          'error',
+          'import_keys_msg',
+          false
+        );
+      }
+    });
+  }
 
   // update key manager and empty import form
   this.openpgp_update_key_manager();
-  $("#privatekey").val("");
-  $("#passphrase").val("");
-
-  this.openpgp_display_message(
-    this.gettext("import_completed", "roundcube_openpgp"),
-    'confirmation',
-    'import_private_msg'
-  );
-  return true;
+  $("#keys").val("");
 };
 
 
@@ -854,11 +828,10 @@ rcube_webmail.prototype.openpgp_pks_search_callback = function(response)
     }
   } else if (response.op === "get") {
     var k = JSON.parse(response.message);
-    $("#publickey").val(k[0]);
 
-    if (rcmail.openpgp_import_public_key($("#publickey").val())) {
-      alert(rcmail.gettext("pubkey_import_success", "roundcube_openpgp"));
-    }
+    // import key and change tab
+    rcmail.openpgp_import_keys(String(k[0]));
+    $("#openpgpjs_tabs").tabs({ active: 3 });
   }
 };
 
@@ -976,7 +949,7 @@ rcube_webmail.prototype.openpgp_get_algorithm = function(id, private=false)
 
 
 /**
- * Returns the status of the key as String (invalid, expired, revoked, 
+ * Returns the status of the key as String (invalid, expired, revoked,
  * valid, no self cert)
  *
  * @param id {Integer} Key id in keyring
@@ -1079,11 +1052,13 @@ rcube_webmail.prototype.openpgp_escape_html = function(unsafe)
  * @param type {String} One of 'confirmation', 'notice', 'error'
  * @param id {String} Id of message container
  */
-rcube_webmail.prototype.openpgp_display_message = function(msg, type, id)
+rcube_webmail.prototype.openpgp_display_message = function(msg, type, id, empty=true)
 {
   // empty message container
-  $('#' + id).html(''
-  )
+  if(empty) {
+    $('#' + id).html('');
+  }
+
   // insert a message into message container
   $('<div>').text(msg).addClass(type).addClass('messagepadding').appendTo($('#' + id));
 };
